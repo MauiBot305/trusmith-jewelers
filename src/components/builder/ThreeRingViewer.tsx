@@ -22,26 +22,27 @@ interface RingModelProps {
 
 function RingModel({ url }: RingModelProps) {
   const meshRef = useRef<Mesh>(null)
-
-  // Try to load the GLTF model; fallback to placeholder geometry
-  let gltfScene: import('three').Group | null = null
-  try {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const { scene } = useGLTF(url)
-    gltfScene = scene
-  } catch {
-    // Model not found — use placeholder geometry below
-  }
+  const groupRef = useRef<import('three').Group>(null)
+  
+  // Load the GLTF model
+  const { scene } = useGLTF(url)
 
   // Slow rotation for display
   useFrame((_, delta) => {
     if (meshRef.current) {
       meshRef.current.rotation.y += delta * 0.4
     }
+    if (groupRef.current) {
+      groupRef.current.rotation.y += delta * 0.4
+    }
   })
 
-  if (gltfScene) {
-    return <primitive object={gltfScene} scale={0.5} position={[0, -0.3, 0]} />
+  if (scene) {
+    return (
+      <group ref={groupRef}>
+        <primitive object={scene.clone()} scale={15} position={[0, -0.5, 0]} />
+      </group>
+    )
   }
 
   // Placeholder ring using torus geometry
@@ -52,6 +53,9 @@ function RingModel({ url }: RingModelProps) {
     </mesh>
   )
 }
+
+// Preload the default ring model
+useGLTF.preload('/models/rings/SM_Solitaire.glb')
 
 // Diamond accent on top of ring
 function DiamondAccent() {
