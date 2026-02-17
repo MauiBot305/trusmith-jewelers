@@ -1,3 +1,4 @@
+/** @jest-environment node */
 /**
  * Integration tests for /api/diamonds route
  * Uses Next.js route handler testing pattern

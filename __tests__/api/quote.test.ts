@@ -1,3 +1,4 @@
+/** @jest-environment node */
 /**
  * Integration tests for /api/quote route
  */
