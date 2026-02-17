@@ -44,8 +44,9 @@ interface ARTryOnProps {
 
 export function ARTryOn({ ringModel = '/models/rings/SM_Solitaire.glb', className }: ARTryOnProps) {
   const [selectedHand, setSelectedHand] = useState(handPresets[0])
-  // 3D viewer enabled - using real GLB models from /public/models/
-  const [show3D, setShow3D] = useState(true)
+  // 3D viewer disabled for now - causes hydration errors on Vercel
+  // TODO: Debug Three.js/R3F SSR issues and re-enable
+  const [show3D, setShow3D] = useState(false)
 
   // Check if iOS for USDZ AR Quick Look
   const isIOS =
