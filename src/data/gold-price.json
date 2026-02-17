@@ -1,0 +1,27 @@
+{
+  "price": 4902.22,
+  "updatedAt": "2026-02-17T14:30:00.931Z",
+  "sourceCount": 5,
+  "sources": [
+    {
+      "name": "JM Bullion",
+      "price": 4911.94
+    },
+    {
+      "name": "Business Insider",
+      "price": 4898.35
+    },
+    {
+      "name": "Trading Economics",
+      "price": 4896.31
+    },
+    {
+      "name": "Coinbase (PAXG)",
+      "price": 4902.375
+    },
+    {
+      "name": "CoinGecko (PAXG)",
+      "price": 4902.1
+    }
+  ]
+}

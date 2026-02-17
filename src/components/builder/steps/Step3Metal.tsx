@@ -2,6 +2,7 @@
 
 import { useBuilderStore, BuilderMetal } from '@/store/builderStore'
 import { cn, formatPrice } from '@/lib/utils'
+import { useEffect, useState } from 'react'
 
 interface MetalData {
   id: string
@@ -13,7 +14,9 @@ interface MetalData {
   disabled?: boolean
 }
 
-const metalsData: MetalData[] = [
+const BASE_GOLD_PRICE = 2000 // Reference price when original modifiers were set
+
+const initialMetalsData: MetalData[] = [
   {
     id: '14k-yellow',
     name: '14K Yellow Gold',
@@ -84,6 +87,39 @@ const metalsData: MetalData[] = [
 
 export default function Step3Metal() {
   const { metal, setMetal, completeStep } = useBuilderStore()
+  const [metals, setMetals] = useState<MetalData[]>(initialMetalsData)
+  const [currentGoldPrice, setCurrentGoldPrice] = useState<number | null>(null)
+
+  useEffect(() => {
+    async function fetchGoldPrice() {
+      try {
+        const res = await fetch('/api/gold-price')
+        if (!res.ok) return
+        const data = await res.json()
+        if (data.price) {
+          setCurrentGoldPrice(data.price)
+          updatePrices(data.price)
+        }
+      } catch (error) {
+        console.error('Failed to fetch gold price', error)
+      }
+    }
+
+    fetchGoldPrice()
+  }, [])
+
+  const updatePrices = (price: number) => {
+    const factor = price / BASE_GOLD_PRICE
+    
+    setMetals(prev => prev.map(m => {
+      if (m.modifier === 0) return m
+      
+      // Calculate new modifier based on gold price factor
+      // Round to nearest 5 for cleaner pricing
+      const newModifier = Math.round((m.modifier * factor) / 5) * 5
+      return { ...m, modifier: newModifier }
+    }))
+  }
 
   const handleSelectMetal = (m: MetalData) => {
     if (m.disabled) return
@@ -105,7 +141,14 @@ export default function Step3Metal() {
 
   return (
     <div className="bg-black-soft p-6 rounded-xl">
-      <h2 className="text-2xl font-serif text-gold mb-2">Step 3: Select Your Metal</h2>
+      <div className="flex justify-between items-center mb-2">
+        <h2 className="text-2xl font-serif text-gold">Step 3: Select Your Metal</h2>
+        {currentGoldPrice && (
+          <span className="text-xs text-white-off/30 font-mono">
+            Live Gold: ${currentGoldPrice.toLocaleString()}
+          </span>
+        )}
+      </div>
       <p className="text-white-off/70 mb-6">
         The metal frames your diamond and defines the ring's character. Each has its own beauty.
       </p>
@@ -117,7 +160,7 @@ export default function Step3Metal() {
             <div className="flex items-center gap-4">
               <div
                 className="w-12 h-12 rounded-full border-2 border-gold"
-                style={{ backgroundColor: metalsData.find((m) => m.id === metal.id)?.hex }}
+                style={{ backgroundColor: metals.find((m) => m.id === metal.id)?.hex }}
               />
               <div>
                 <div className="flex items-center gap-2">
@@ -141,7 +184,7 @@ export default function Step3Metal() {
 
       {/* Metals Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {metalsData.map((m) => (
+        {metals.map((m) => (
           <button
             key={m.id}
             onClick={() => handleSelectMetal(m)}
