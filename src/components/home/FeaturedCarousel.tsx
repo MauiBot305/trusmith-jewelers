@@ -66,7 +66,7 @@ const products = [
     name: 'Emerald Three-Stone Ring',
     category: 'Engagement Ring',
     price: '$4,100',
-    image: 'https://images.unsplash.com/photo-1573408301185-9519f94816b5?w=600&q=80',
+    image: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=600&q=80',
     href: '/shop/emerald-three-stone',
   },
 ]

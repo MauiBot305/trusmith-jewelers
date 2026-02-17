@@ -183,6 +183,7 @@ export const useBuilderStore = create<BuilderState>()(
     }),
     {
       name: 'trusmith-ring-builder',
+      version: 1,
       // Only persist the data, not the functions
       partialize: (state) => ({
         currentStep: state.currentStep,

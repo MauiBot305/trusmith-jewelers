@@ -4,13 +4,32 @@ import { useState } from 'react'
 import { useBuilderStore, BuilderSetting } from '@/store/builderStore'
 import { cn, formatPrice } from '@/lib/utils'
 
+// ── Ring Model Mappings (GLB files in /public/models/) ─────────────────────────
+export const RING_MODELS: Record<string, string> = {
+  solitaire: '/models/SM_Solitaire.glb',
+  halo: '/models/SM_HexaRing.glb',
+  'three-stone': '/models/SM_AbstractPrism.glb',
+  pave: '/models/SM_Channel_Of_Light.glb',
+  'channel-set': '/models/SM_Channel_Of_Light.glb',
+  vintage: '/models/SM_Asymmetric_contemporary_ring.glb',
+  cathedral: '/models/SM_The_Skyscraper_Ring.glb',
+  bezel: '/models/SM_GeometricAndArchitectural_Ring.glb',
+  'split-shank': '/models/SM_NegativeSpaceGrid_Ring.glb',
+  tension: '/models/SM_Deconstructed_Square_Ring.glb',
+}
+
+// Helper to get model URL for a setting ID
+export function getRingModelUrl(settingId: string | undefined): string {
+  if (!settingId) return '/models/ring-placeholder.glb'
+  return RING_MODELS[settingId] || '/models/ring-placeholder.glb'
+}
+
 interface SettingData {
   id: string
   name: string
   price: number
   teaser: string
   story: string
-  image: string
 }
 
 const settingsData: SettingData[] = [
@@ -19,7 +38,6 @@ const settingsData: SettingData[] = [
     name: 'Solitaire',
     price: 400,
     teaser: 'Timeless elegance',
-    image: '/images/rings/solitaire-1.jpg',
     story:
       'Timeless elegance where your diamond takes center stage. The purest expression of love. A solitaire setting strips away all distraction, letting the beauty of your chosen diamond speak for itself. This classic design has endured for generations because it celebrates what matters most—the brilliant symbol of your commitment.',
   },
@@ -28,7 +46,6 @@ const settingsData: SettingData[] = [
     name: 'Halo',
     price: 600,
     teaser: 'Amplified brilliance',
-    image: '/images/rings/halo-1.jpg',
     story:
       'A circle of smaller diamonds amplifies your center stone, making it appear larger and more brilliant. The halo setting creates a dazzling frame that catches light from every angle. Perfect for those who want maximum sparkle and presence. Your diamond will appear up to half a carat larger while adding incredible fire.',
   },
@@ -37,7 +54,6 @@ const settingsData: SettingData[] = [
     name: 'Three-Stone',
     price: 700,
     teaser: 'Past, present, future',
-    image: '/images/rings/three-stone-1.jpg',
     story:
       "Representing past, present, and future. A meaningful choice for your journey together. The three stones tell your love story—where you've been, where you are, and the beautiful future ahead. Each side stone complements the center diamond while adding depth and symbolism to this romantic design.",
   },
@@ -46,7 +62,6 @@ const settingsData: SettingData[] = [
     name: 'Pavé',
     price: 550,
     teaser: 'River of sparkle',
-    image: '/images/rings/pave-1.jpg',
     story:
       'Delicate diamonds set along the band create a river of sparkle. Maximum brilliance. The French word "pavé" means paved, and that\'s exactly what this setting delivers—a continuous path of light that leads to your center stone. Tiny diamonds are set so closely together that the metal virtually disappears.',
   },
@@ -55,7 +70,6 @@ const settingsData: SettingData[] = [
     name: 'Channel Set',
     price: 500,
     teaser: 'Sleek and protected',
-    image: '/images/settings/setting-1.jpg',
     story:
       "Diamonds nestled securely within the band. Sleek, modern, protected. The channel setting suspends diamonds between two walls of precious metal, creating a smooth surface that's both elegant and practical. Perfect for active lifestyles—your diamonds are shielded while still radiating beauty.",
   },
@@ -64,7 +78,6 @@ const settingsData: SettingData[] = [
     name: 'Vintage',
     price: 650,
     teaser: 'Art Deco romance',
-    image: '/images/rings/vintage-1.jpg',
     story:
       'Art Deco-inspired details for the romantic soul. Timeless beauty with character. Milgrain edges, intricate filigree, and delicate scrollwork transport you to an era of elegance. This setting whispers of gatsby parties and timeless romance, perfect for those who appreciate the artistry of the past.',
   },
@@ -73,7 +86,6 @@ const settingsData: SettingData[] = [
     name: 'Cathedral',
     price: 450,
     teaser: 'Regal and commanding',
-    image: '/images/settings/setting-2.jpg',
     story:
       "Arched sides elevate your diamond like a work of art. Regal and commanding. Inspired by the sweeping arches of grand cathedrals, this setting lifts your diamond high, creating a dramatic profile. The graceful curves add sophistication while protecting the stone's edges.",
   },
@@ -82,7 +94,6 @@ const settingsData: SettingData[] = [
     name: 'Bezel',
     price: 500,
     teaser: 'Contemporary and distinctive',
-    image: '/images/settings/setting-3.jpg',
     story:
       'A modern metal rim encircles your diamond. Contemporary, protective, distinctive. The bezel setting wraps your diamond in a sleek metal embrace, offering maximum protection while creating a bold, modern look. Perfect for those who appreciate clean lines and contemporary design.',
   },
@@ -91,7 +102,6 @@ const settingsData: SettingData[] = [
     name: 'Split Shank',
     price: 550,
     teaser: 'Eye-catching elegance',
-    image: '/images/rings/solitaire-2.jpg',
     story:
       'The band gracefully divides as it reaches the diamond. Eye-catching elegance. As the band approaches your center stone, it splits into two delicate strands, creating a dramatic frame. This architectural design adds visual interest and makes your diamond appear larger and more prominent.',
   },
@@ -100,7 +110,6 @@ const settingsData: SettingData[] = [
     name: 'Tension',
     price: 600,
     teaser: 'Strikingly modern',
-    image: '/images/diamonds/diamond-ring.jpg',
     story:
       'Your diamond appears to float, held by the pressure of the band. Strikingly modern. The tension setting is engineering meets art—your diamond is suspended by the precise pressure of the metal band, with light able to enter from all sides. A conversation starter that showcases cutting-edge craftsmanship.',
   },
@@ -116,7 +125,7 @@ export default function Step2Setting() {
       name: s.name,
       basePrice: s.price,
       priceModifier: 0,
-      image: s.image,
+      image: '',
       tagline: s.teaser,
       description: s.story,
       story: s.story,
@@ -171,13 +180,8 @@ export default function Step2Setting() {
               isSelected(s.id) ? 'border-gold' : 'border-transparent'
             )}
           >
-            {/* Setting Image */}
-            <div className="aspect-square bg-black-deep relative overflow-hidden">
-              <img
-                src={s.image}
-                alt={s.name}
-                className="w-full h-full object-cover"
-              />
+            {/* Placeholder Image Area */}
+            <div className="aspect-square bg-gradient-to-br from-black-deep via-black-soft to-black-deep relative">
               <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
 
               {/* Hover teaser */}
@@ -226,14 +230,8 @@ export default function Step2Setting() {
               </button>
             </div>
 
-            {/* Setting Image */}
-            <div className="aspect-video rounded-lg mb-4 overflow-hidden">
-              <img
-                src={modalSetting.image}
-                alt={modalSetting.name}
-                className="w-full h-full object-cover"
-              />
-            </div>
+            {/* Placeholder Image */}
+            <div className="aspect-video bg-gradient-to-br from-black-soft via-black to-black-soft rounded-lg mb-4" />
 
             {/* Story */}
             <p className="text-white-off/80 leading-relaxed mb-6">{modalSetting.story}</p>
