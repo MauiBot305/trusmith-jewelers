@@ -45,9 +45,9 @@ export interface BuilderState {
   completedSteps: number[]
 
   // Actions
-  setDiamond: (diamond: Diamond) => void
-  setSetting: (setting: BuilderSetting) => void
-  setMetal: (metal: BuilderMetal) => void
+  setDiamond: (diamond: Diamond | null) => void
+  setSetting: (setting: BuilderSetting | null) => void
+  setMetal: (metal: BuilderMetal | null) => void
   setEngraving: (text: string) => void
   setRingSize: (size: string) => void
   setNotes: (notes: string) => void
@@ -105,19 +105,25 @@ export const useBuilderStore = create<BuilderState>()(
       setDiamond: (diamond) =>
         set((state) => ({
           diamond,
-          completedSteps: Array.from(new Set([...state.completedSteps, 1])),
+          completedSteps: diamond
+            ? Array.from(new Set([...state.completedSteps, 1]))
+            : state.completedSteps.filter((s) => s !== 1),
         })),
 
       setSetting: (setting) =>
         set((state) => ({
           setting,
-          completedSteps: Array.from(new Set([...state.completedSteps, 2])),
+          completedSteps: setting
+            ? Array.from(new Set([...state.completedSteps, 2]))
+            : state.completedSteps.filter((s) => s !== 2),
         })),
 
       setMetal: (metal) =>
         set((state) => ({
           metal,
-          completedSteps: Array.from(new Set([...state.completedSteps, 3])),
+          completedSteps: metal
+            ? Array.from(new Set([...state.completedSteps, 3]))
+            : state.completedSteps.filter((s) => s !== 3),
         })),
 
       setEngraving: (engraving) => set({ engraving }),

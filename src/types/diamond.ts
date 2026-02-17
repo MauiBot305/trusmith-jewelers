@@ -24,22 +24,24 @@ export type Certification = (typeof CERTIFICATIONS)[number]
 
 export interface Diamond {
   id: string
-  sku: string
+  sku?: string | null
   cut: string
   carat: number
   color: string
   clarity: string
   certification: string
-  certificateNumber: string
+  certificateNumber?: string | null
+  certNumber?: string | null
   certificateUrl?: string | null
   price: number
-  images: string[]
+  images?: string[]
   videoUrl?: string | null
-  inStock: boolean
-  featured: boolean
+  inStock?: boolean
+  available?: boolean
+  featured?: boolean
   description?: string | null
-  createdAt: string | Date
-  updatedAt: string | Date
+  createdAt?: string | Date
+  updatedAt?: string | Date
 }
 
 export interface DiamondFilters {

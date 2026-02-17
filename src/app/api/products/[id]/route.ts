@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/db'
 
-export async function GET(_request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(
+  _request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const product = await prisma.inventoryProduct.findUnique({
       where: { id: params.id },
@@ -11,7 +14,13 @@ export async function GET(_request: NextRequest, { params }: { params: { id: str
       return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     }
 
-    // Related products in same category
+    const normalize = (p: typeof product) => ({
+      ...p,
+      category: p.category.toUpperCase(),
+      inStock: p.available,
+      diamondSpecs: p.diamondSpecs ? JSON.parse(p.diamondSpecs) : null,
+    })
+
     const related = await prisma.inventoryProduct.findMany({
       where: {
         id: { not: product.id },
@@ -22,7 +31,10 @@ export async function GET(_request: NextRequest, { params }: { params: { id: str
       orderBy: { featured: 'desc' },
     })
 
-    return NextResponse.json({ product, related })
+    return NextResponse.json({
+      product: normalize(product),
+      related: related.map(normalize),
+    })
   } catch (error) {
     console.error('[API /products/[id]]', error)
     return NextResponse.json({ error: 'Failed to fetch product' }, { status: 500 })

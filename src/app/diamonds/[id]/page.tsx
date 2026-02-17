@@ -125,7 +125,7 @@ export default function DiamondDetailPage() {
               </div>
 
               {activeTab === 'gallery' ? (
-                <ImageGallery images={diamond.images} alt={`${diamond.carat}ct ${diamond.cut}`} />
+                <ImageGallery images={diamond.images ?? []} alt={`${diamond.carat}ct ${diamond.cut}`} />
               ) : (
                 <Diamond3DViewer className="w-full" />
               )}
@@ -244,7 +244,7 @@ export default function DiamondDetailPage() {
       <CertificateModal
         isOpen={certOpen}
         onClose={() => setCertOpen(false)}
-        certNumber={diamond.certificateNumber}
+        certNumber={diamond.certificateNumber ?? diamond.certNumber ?? ''}
         certLab={diamond.certification}
         certUrl={diamond.certificateUrl}
       />

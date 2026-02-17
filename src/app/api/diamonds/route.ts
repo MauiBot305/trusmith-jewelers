@@ -26,44 +26,25 @@ export async function GET(request: NextRequest) {
       price: { gte: priceMin, lte: priceMax },
     }
 
-    if (cuts.length > 0) {
-      where.cut = { in: cuts }
-    }
-
-    if (colors.length > 0) {
-      where.color = { in: colors }
-    }
-
-    if (clarities.length > 0) {
-      where.clarity = { in: clarities }
-    }
-
-    if (certification !== 'Both') {
-      where.certification = certification
-    }
+    if (cuts.length > 0) where.cut = { in: cuts }
+    if (colors.length > 0) where.color = { in: colors }
+    if (clarities.length > 0) where.clarity = { in: clarities }
+    if (certification !== 'Both') where.certification = certification
 
     if (search) {
       where.OR = [
         { cut: { contains: search, mode: 'insensitive' } },
         { certification: { contains: search, mode: 'insensitive' } },
-        { certNumber: { contains: search, mode: 'insensitive' } },
+        { sku: { contains: search, mode: 'insensitive' } },
       ]
     }
 
     let orderBy: Prisma.DiamondOrderByWithRelationInput = { createdAt: 'desc' }
     switch (sort) {
-      case 'price_asc':
-        orderBy = { price: 'asc' }
-        break
-      case 'price_desc':
-        orderBy = { price: 'desc' }
-        break
-      case 'carat_desc':
-        orderBy = { carat: 'desc' }
-        break
-      case 'newest':
-      default:
-        orderBy = { createdAt: 'desc' }
+      case 'price_asc':  orderBy = { price: 'asc' };    break
+      case 'price_desc': orderBy = { price: 'desc' };   break
+      case 'carat_desc': orderBy = { carat: 'desc' };   break
+      default:           orderBy = { createdAt: 'desc' }
     }
 
     const [diamonds, total] = await Promise.all([
@@ -71,8 +52,15 @@ export async function GET(request: NextRequest) {
       prisma.diamond.count({ where }),
     ])
 
+    // Normalize field names for the frontend
+    const normalized = diamonds.map(d => ({
+      ...d,
+      certificateNumber: d.certNumber,
+      inStock: d.available,
+    }))
+
     return NextResponse.json({
-      diamonds,
+      diamonds: normalized,
       total,
       page,
       limit,

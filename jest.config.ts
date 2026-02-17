@@ -8,7 +8,7 @@ const createJestConfig = nextJest({
 const config: Config = {
   coverageProvider: 'v8',
   testEnvironment: 'jsdom',
-  setupFilesAfterFramework: ['<rootDir>/jest.setup.ts'],
+  setupFilesAfterEnvironment: ['<rootDir>/jest.setup.ts'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
     // Mock heavy 3D libs in test environment

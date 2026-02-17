@@ -69,6 +69,7 @@ model Setting {
   id          String   @id @default(cuid())
   name        String
   style       String   // Solitaire | Halo | Pavé | Three-Stone | Cathedral | Bezel | Tension | Vintage | East-West | Bypass
+  tagline     String?  // Short teaser text
   description String
   story       String   // Emotional meaning / backstory for the style
   images      String[]
@@ -85,7 +86,11 @@ model Metal {
   name          String   // Yellow Gold | White Gold | Rose Gold | Platinum
   type          String   // gold | platinum
   karat         String?  // 14K | 18K | 24K
+  color         String?  // CSS color name
+  hex           String?  // Hex color code for swatches
+  description   String?  // Marketing description
   priceModifier Float    @default(1.0)
+  available     Boolean  @default(true)
   designs       Design[]
 
   @@map("metals")
@@ -105,6 +110,7 @@ model Design {
   metal      Metal     @relation(fields: [metalId], references: [id])
   engraving  String?
   ringSize   String?
+  notes      String?
   totalPrice Float?
   status     String    @default("draft") // draft | quoted | deposited | in_production | completed
   createdAt  DateTime  @default(now())
