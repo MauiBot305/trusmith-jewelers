@@ -4,6 +4,26 @@ import { useState } from 'react'
 import { useBuilderStore, BuilderSetting } from '@/store/builderStore'
 import { cn, formatPrice } from '@/lib/utils'
 
+// ── Ring Model Mappings (GLB files in /public/models/) ─────────────────────────
+export const RING_MODELS: Record<string, string> = {
+  'solitaire': '/models/SM_Solitaire.glb',
+  'halo': '/models/SM_HexaRing.glb',
+  'three-stone': '/models/SM_AbstractPrism.glb',
+  'pave': '/models/SM_Channel_Of_Light.glb',
+  'channel-set': '/models/SM_Channel_Of_Light.glb',
+  'vintage': '/models/SM_Asymmetric_contemporary_ring.glb',
+  'cathedral': '/models/SM_The_Skyscraper_Ring.glb',
+  'bezel': '/models/SM_GeometricAndArchitectural_Ring.glb',
+  'split-shank': '/models/SM_NegativeSpaceGrid_Ring.glb',
+  'tension': '/models/SM_Deconstructed_Square_Ring.glb',
+}
+
+// Helper to get model URL for a setting ID
+export function getRingModelUrl(settingId: string | undefined): string {
+  if (!settingId) return '/models/ring-placeholder.glb'
+  return RING_MODELS[settingId] || '/models/ring-placeholder.glb'
+}
+
 interface SettingData {
   id: string
   name: string

@@ -6,6 +6,26 @@ import { useBuilderStore } from '@/store/builderStore'
 import { Diamond } from '@/types/diamond'
 import { cn, formatPrice } from '@/lib/utils'
 
+// ── Diamond Model Mappings (GLB files in /public/models/) ──────────────────────
+export const DIAMOND_MODELS: Record<string, string> = {
+  'Round Brilliant': '/models/SM_Round_Brilliant.glb',
+  'Oval': '/models/SM_Oval_Brilliant.glb',
+  'Princess': '/models/SM_Princess.glb',
+  'Cushion': '/models/SM_Cushion_Four-Main.glb',
+  'Emerald': '/models/Emerald.glb',
+  'Marquise': '/models/SM_Marquise_Brilliant.glb',
+  'Pear': '/models/SM_PearShaped.glb',
+  'Radiant': '/models/SM_Radiant.glb',
+  'Asscher': '/models/SM_Asscher.glb',
+  'Heart': '/models/Heart.glb',
+}
+
+// Helper to get diamond model URL for a cut name
+export function getDiamondModelUrl(cut: string | undefined): string | undefined {
+  if (!cut) return undefined
+  return DIAMOND_MODELS[cut]
+}
+
 // Cut icons as simple SVG components
 const CutIcons: Record<string, JSX.Element> = {
   'Round Brilliant': (

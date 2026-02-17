@@ -6,6 +6,7 @@ import { Diamond, Settings2, Gem, PenLine, Ruler, ChevronRight, Edit3 } from 'lu
 import { useBuilderStore } from '@/store/builderStore'
 import { formatPrice } from '@/lib/utils'
 import { cn } from '@/lib/utils'
+import { getRingModelUrl } from './Step2Setting'
 
 // Lazy load AR component
 const ARTryOn = dynamic(() => import('@/components/builder/ARTryOn'), {
@@ -76,6 +77,12 @@ export function Step5Preview() {
   const { diamond, setting, metal, engraving, ringSize, getTotal, setStep } = useBuilderStore()
 
   const total = getTotal()
+  
+  // Get the model URL based on selected setting
+  const ringModelUrl = getRingModelUrl(setting?.id)
+  
+  // Get the metal color from the selected metal's hex, default to yellow gold
+  const metalColor = metal?.hex || '#D4AF37'
 
   const handleEditDesign = () => {
     setStep(1)
@@ -197,7 +204,7 @@ export function Step5Preview() {
                   </div>
                 }
               >
-                <ARTryOn />
+                <ARTryOn ringModel={ringModelUrl} metalColor={metalColor} />
               </Suspense>
             </div>
           </div>
