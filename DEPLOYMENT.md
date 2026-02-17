@@ -164,7 +164,7 @@ npx npm-check-updates  # Upgrade major versions
 
 ## Phase 2 Roadmap
 
-- [ ] **WebAR** — MediaPipe Hands for real-time ring try-on
+- [x] **WebAR** — MediaPipe Hands for real-time ring try-on (Implemented Feb 17, 2026)
 - [ ] **Stripe Checkout** — Deposit flow for custom ring orders
 - [ ] **Admin Dashboard** — Order management, inventory
 - [ ] **Email Notifications** — Automated quote follow-ups
