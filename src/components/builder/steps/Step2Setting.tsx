@@ -1,15 +1,15 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { useBuilderStore, BuilderSetting } from '@/store/builderStore';
-import { cn, formatPrice } from '@/lib/utils';
+import { useState } from 'react'
+import { useBuilderStore, BuilderSetting } from '@/store/builderStore'
+import { cn, formatPrice } from '@/lib/utils'
 
 interface SettingData {
-  id: string;
-  name: string;
-  price: number;
-  teaser: string;
-  story: string;
+  id: string
+  name: string
+  price: number
+  teaser: string
+  story: string
 }
 
 const settingsData: SettingData[] = [
@@ -18,76 +18,86 @@ const settingsData: SettingData[] = [
     name: 'Solitaire',
     price: 400,
     teaser: 'Timeless elegance',
-    story: 'Timeless elegance where your diamond takes center stage. The purest expression of love. A solitaire setting strips away all distraction, letting the beauty of your chosen diamond speak for itself. This classic design has endured for generations because it celebrates what matters most—the brilliant symbol of your commitment.',
+    story:
+      'Timeless elegance where your diamond takes center stage. The purest expression of love. A solitaire setting strips away all distraction, letting the beauty of your chosen diamond speak for itself. This classic design has endured for generations because it celebrates what matters most—the brilliant symbol of your commitment.',
   },
   {
     id: 'halo',
     name: 'Halo',
     price: 600,
     teaser: 'Amplified brilliance',
-    story: 'A circle of smaller diamonds amplifies your center stone, making it appear larger and more brilliant. The halo setting creates a dazzling frame that catches light from every angle. Perfect for those who want maximum sparkle and presence. Your diamond will appear up to half a carat larger while adding incredible fire.',
+    story:
+      'A circle of smaller diamonds amplifies your center stone, making it appear larger and more brilliant. The halo setting creates a dazzling frame that catches light from every angle. Perfect for those who want maximum sparkle and presence. Your diamond will appear up to half a carat larger while adding incredible fire.',
   },
   {
     id: 'three-stone',
     name: 'Three-Stone',
     price: 700,
     teaser: 'Past, present, future',
-    story: 'Representing past, present, and future. A meaningful choice for your journey together. The three stones tell your love story—where you\'ve been, where you are, and the beautiful future ahead. Each side stone complements the center diamond while adding depth and symbolism to this romantic design.',
+    story:
+      "Representing past, present, and future. A meaningful choice for your journey together. The three stones tell your love story—where you've been, where you are, and the beautiful future ahead. Each side stone complements the center diamond while adding depth and symbolism to this romantic design.",
   },
   {
     id: 'pave',
     name: 'Pavé',
     price: 550,
     teaser: 'River of sparkle',
-    story: 'Delicate diamonds set along the band create a river of sparkle. Maximum brilliance. The French word "pavé" means paved, and that\'s exactly what this setting delivers—a continuous path of light that leads to your center stone. Tiny diamonds are set so closely together that the metal virtually disappears.',
+    story:
+      'Delicate diamonds set along the band create a river of sparkle. Maximum brilliance. The French word "pavé" means paved, and that\'s exactly what this setting delivers—a continuous path of light that leads to your center stone. Tiny diamonds are set so closely together that the metal virtually disappears.',
   },
   {
     id: 'channel-set',
     name: 'Channel Set',
     price: 500,
     teaser: 'Sleek and protected',
-    story: 'Diamonds nestled securely within the band. Sleek, modern, protected. The channel setting suspends diamonds between two walls of precious metal, creating a smooth surface that\'s both elegant and practical. Perfect for active lifestyles—your diamonds are shielded while still radiating beauty.',
+    story:
+      "Diamonds nestled securely within the band. Sleek, modern, protected. The channel setting suspends diamonds between two walls of precious metal, creating a smooth surface that's both elegant and practical. Perfect for active lifestyles—your diamonds are shielded while still radiating beauty.",
   },
   {
     id: 'vintage',
     name: 'Vintage',
     price: 650,
     teaser: 'Art Deco romance',
-    story: 'Art Deco-inspired details for the romantic soul. Timeless beauty with character. Milgrain edges, intricate filigree, and delicate scrollwork transport you to an era of elegance. This setting whispers of gatsby parties and timeless romance, perfect for those who appreciate the artistry of the past.',
+    story:
+      'Art Deco-inspired details for the romantic soul. Timeless beauty with character. Milgrain edges, intricate filigree, and delicate scrollwork transport you to an era of elegance. This setting whispers of gatsby parties and timeless romance, perfect for those who appreciate the artistry of the past.',
   },
   {
     id: 'cathedral',
     name: 'Cathedral',
     price: 450,
     teaser: 'Regal and commanding',
-    story: 'Arched sides elevate your diamond like a work of art. Regal and commanding. Inspired by the sweeping arches of grand cathedrals, this setting lifts your diamond high, creating a dramatic profile. The graceful curves add sophistication while protecting the stone\'s edges.',
+    story:
+      "Arched sides elevate your diamond like a work of art. Regal and commanding. Inspired by the sweeping arches of grand cathedrals, this setting lifts your diamond high, creating a dramatic profile. The graceful curves add sophistication while protecting the stone's edges.",
   },
   {
     id: 'bezel',
     name: 'Bezel',
     price: 500,
     teaser: 'Contemporary and distinctive',
-    story: 'A modern metal rim encircles your diamond. Contemporary, protective, distinctive. The bezel setting wraps your diamond in a sleek metal embrace, offering maximum protection while creating a bold, modern look. Perfect for those who appreciate clean lines and contemporary design.',
+    story:
+      'A modern metal rim encircles your diamond. Contemporary, protective, distinctive. The bezel setting wraps your diamond in a sleek metal embrace, offering maximum protection while creating a bold, modern look. Perfect for those who appreciate clean lines and contemporary design.',
   },
   {
     id: 'split-shank',
     name: 'Split Shank',
     price: 550,
     teaser: 'Eye-catching elegance',
-    story: 'The band gracefully divides as it reaches the diamond. Eye-catching elegance. As the band approaches your center stone, it splits into two delicate strands, creating a dramatic frame. This architectural design adds visual interest and makes your diamond appear larger and more prominent.',
+    story:
+      'The band gracefully divides as it reaches the diamond. Eye-catching elegance. As the band approaches your center stone, it splits into two delicate strands, creating a dramatic frame. This architectural design adds visual interest and makes your diamond appear larger and more prominent.',
   },
   {
     id: 'tension',
     name: 'Tension',
     price: 600,
     teaser: 'Strikingly modern',
-    story: 'Your diamond appears to float, held by the pressure of the band. Strikingly modern. The tension setting is engineering meets art—your diamond is suspended by the precise pressure of the metal band, with light able to enter from all sides. A conversation starter that showcases cutting-edge craftsmanship.',
+    story:
+      'Your diamond appears to float, held by the pressure of the band. Strikingly modern. The tension setting is engineering meets art—your diamond is suspended by the precise pressure of the metal band, with light able to enter from all sides. A conversation starter that showcases cutting-edge craftsmanship.',
   },
-];
+]
 
 export default function Step2Setting() {
-  const { setting, setSetting, completeStep } = useBuilderStore();
-  const [modalSetting, setModalSetting] = useState<SettingData | null>(null);
+  const { setting, setSetting, completeStep } = useBuilderStore()
+  const [modalSetting, setModalSetting] = useState<SettingData | null>(null)
 
   const handleSelectSetting = (s: SettingData) => {
     const builderSetting: BuilderSetting = {
@@ -95,18 +105,18 @@ export default function Step2Setting() {
       name: s.name,
       basePrice: s.price,
       priceModifier: 0,
-      image: "",
+      image: '',
       tagline: s.teaser,
       description: s.story,
       story: s.story,
       style: s.id,
-    };
-    setSetting(builderSetting);
-    completeStep(2);
-    setModalSetting(null);
-  };
+    }
+    setSetting(builderSetting)
+    completeStep(2)
+    setModalSetting(null)
+  }
 
-  const isSelected = (id: string) => setting?.id === id;
+  const isSelected = (id: string) => setting?.id === id
 
   return (
     <div className="bg-black-soft p-6 rounded-xl">
@@ -124,7 +134,9 @@ export default function Step2Setting() {
                 <span className="text-gold font-semibold text-lg">Selected ✓</span>
               </div>
               <p className="text-white-off text-xl">{setting.name}</p>
-              <p className="text-gold text-lg font-semibold mt-1">{formatPrice(setting.basePrice)}</p>
+              <p className="text-gold text-lg font-semibold mt-1">
+                {formatPrice(setting.basePrice)}
+              </p>
             </div>
             <button
               onClick={() => setSetting(null)}
@@ -145,15 +157,13 @@ export default function Step2Setting() {
             className={cn(
               'group relative flex flex-col rounded-lg overflow-hidden transition-all duration-300',
               'border-2 hover:scale-105 hover:border-gold',
-              isSelected(s.id)
-                ? 'border-gold'
-                : 'border-transparent'
+              isSelected(s.id) ? 'border-gold' : 'border-transparent'
             )}
           >
             {/* Placeholder Image Area */}
             <div className="aspect-square bg-gradient-to-br from-black-deep via-black-soft to-black-deep relative">
               <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
-              
+
               {/* Hover teaser */}
               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/60">
                 <p className="text-gold text-sm text-center px-2">{s.teaser}</p>
@@ -230,5 +240,5 @@ export default function Step2Setting() {
         </div>
       )}
     </div>
-  );
+  )
 }

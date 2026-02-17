@@ -14,7 +14,9 @@ const ARTryOn = dynamic(() => import('@/components/builder/ARTryOn'), {
     <div className="aspect-[4/3] bg-black-soft rounded-xl border border-gold/10 flex items-center justify-center">
       <div className="flex flex-col items-center gap-3">
         <div className="w-8 h-8 border-2 border-gold border-t-transparent rounded-full animate-spin" />
-        <span className="text-white-off/50 text-xs tracking-wider uppercase">Loading AR Preview</span>
+        <span className="text-white-off/50 text-xs tracking-wider uppercase">
+          Loading AR Preview
+        </span>
       </div>
     </div>
   ),
@@ -28,11 +30,13 @@ interface AngleViewProps {
 
 function AngleViewPlaceholder({ label, gradient }: AngleViewProps) {
   return (
-    <div className={cn(
-      "aspect-square rounded-xl border border-gold/20 flex items-center justify-center relative overflow-hidden",
-      "bg-gradient-to-br",
-      gradient
-    )}>
+    <div
+      className={cn(
+        'aspect-square rounded-xl border border-gold/20 flex items-center justify-center relative overflow-hidden',
+        'bg-gradient-to-br',
+        gradient
+      )}
+    >
       <div className="absolute inset-0 flex items-center justify-center">
         <Gem className="w-12 h-12 text-gold/30" />
       </div>
@@ -54,15 +58,15 @@ interface SummaryLineProps {
 
 function SummaryLine({ icon, label, value, price, className }: SummaryLineProps) {
   return (
-    <div className={cn("flex items-start gap-3 py-3 border-b border-white/5 last:border-0", className)}>
+    <div
+      className={cn('flex items-start gap-3 py-3 border-b border-white/5 last:border-0', className)}
+    >
       <div className="text-gold mt-0.5">{icon}</div>
       <div className="flex-1 min-w-0">
         <div className="text-white-off/50 text-xs uppercase tracking-wider">{label}</div>
         <div className="text-white-off text-sm font-medium truncate">{value}</div>
       </div>
-      {price && (
-        <div className="text-gold font-semibold text-sm whitespace-nowrap">{price}</div>
-      )}
+      {price && <div className="text-gold font-semibold text-sm whitespace-nowrap">{price}</div>}
     </div>
   )
 }
@@ -70,7 +74,7 @@ function SummaryLine({ icon, label, value, price, className }: SummaryLineProps)
 // ── Main Step 5 Component ──────────────────────────────────────────────────────
 export function Step5Preview() {
   const { diamond, setting, metal, engraving, ringSize, getTotal, setStep } = useBuilderStore()
-  
+
   const total = getTotal()
 
   const handleEditDesign = () => {
@@ -86,7 +90,9 @@ export function Step5Preview() {
       {/* Header */}
       <div className="text-center space-y-2">
         <h2 className="text-2xl md:text-3xl font-serif text-gold">Your Custom Creation</h2>
-        <p className="text-white-off/60 text-sm">Review your design before securing your reservation</p>
+        <p className="text-white-off/60 text-sm">
+          Review your design before securing your reservation
+        </p>
       </div>
 
       <div className="grid lg:grid-cols-2 gap-8">
@@ -94,8 +100,10 @@ export function Step5Preview() {
         <div className="space-y-6">
           {/* Design Summary Card */}
           <div className="bg-black-soft border border-gold/20 rounded-2xl p-6 space-y-1">
-            <h3 className="text-gold text-xs uppercase tracking-[0.25em] font-sans mb-4">Design Summary</h3>
-            
+            <h3 className="text-gold text-xs uppercase tracking-[0.25em] font-sans mb-4">
+              Design Summary
+            </h3>
+
             {/* Diamond */}
             {diamond && (
               <SummaryLine
@@ -122,7 +130,9 @@ export function Step5Preview() {
                 icon={<Gem className="w-4 h-4" />}
                 label="Metal"
                 value={`${metal.name} ${metal.karat}`}
-                price={metal.priceModifier > 0 ? `+${formatPrice(metal.priceModifier)}` : 'Included'}
+                price={
+                  metal.priceModifier > 0 ? `+${formatPrice(metal.priceModifier)}` : 'Included'
+                }
               />
             )}
 
@@ -150,7 +160,9 @@ export function Step5Preview() {
                 <span className="text-white-off font-semibold">Estimated Total</span>
                 <span className="text-3xl font-serif text-gold">{formatPrice(total)}</span>
               </div>
-              <p className="text-white-off/40 text-xs mt-1">Final price confirmed at consultation</p>
+              <p className="text-white-off/40 text-xs mt-1">
+                Final price confirmed at consultation
+              </p>
             </div>
           </div>
 
@@ -160,8 +172,14 @@ export function Step5Preview() {
             <div className="grid grid-cols-2 gap-3">
               <AngleViewPlaceholder label="Front View" gradient="from-gray-900 to-gray-800" />
               <AngleViewPlaceholder label="Side View" gradient="from-gray-800 to-gray-900" />
-              <AngleViewPlaceholder label="Top View" gradient="from-gray-900 via-gray-800 to-gray-900" />
-              <AngleViewPlaceholder label="3/4 View" gradient="from-gray-800 via-gray-900 to-gray-800" />
+              <AngleViewPlaceholder
+                label="Top View"
+                gradient="from-gray-900 via-gray-800 to-gray-900"
+              />
+              <AngleViewPlaceholder
+                label="3/4 View"
+                gradient="from-gray-800 via-gray-900 to-gray-800"
+              />
             </div>
           </div>
         </div>
@@ -172,11 +190,13 @@ export function Step5Preview() {
           <div className="space-y-3">
             <h3 className="text-gold text-xs uppercase tracking-[0.25em] font-sans">3D Preview</h3>
             <div className="bg-black-soft border border-gold/20 rounded-2xl p-4 overflow-hidden">
-              <Suspense fallback={
-                <div className="aspect-[4/3] flex items-center justify-center">
-                  <div className="w-8 h-8 border-2 border-gold border-t-transparent rounded-full animate-spin" />
-                </div>
-              }>
+              <Suspense
+                fallback={
+                  <div className="aspect-[4/3] flex items-center justify-center">
+                    <div className="w-8 h-8 border-2 border-gold border-t-transparent rounded-full animate-spin" />
+                  </div>
+                }
+              >
                 <ARTryOn />
               </Suspense>
             </div>
@@ -190,12 +210,14 @@ export function Step5Preview() {
               </div>
               <div>
                 <h4 className="text-gold font-semibold">See It On Your Hand</h4>
-                <p className="text-white-off/50 text-xs">Try the AR preview above to visualize your ring</p>
+                <p className="text-white-off/50 text-xs">
+                  Try the AR preview above to visualize your ring
+                </p>
               </div>
             </div>
             <p className="text-white-off/60 text-sm leading-relaxed">
-              Use the 3D viewer above to rotate, zoom, and try different skin tone presets 
-              to see exactly how your custom creation will look.
+              Use the 3D viewer above to rotate, zoom, and try different skin tone presets to see
+              exactly how your custom creation will look.
             </p>
           </div>
         </div>

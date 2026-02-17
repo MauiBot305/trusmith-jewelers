@@ -4,7 +4,16 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Diamond, Settings2, Gem, Shield, Lock, CreditCard, Loader2, CheckCircle } from 'lucide-react'
+import {
+  Diamond,
+  Settings2,
+  Gem,
+  Shield,
+  Lock,
+  CreditCard,
+  Loader2,
+  CheckCircle,
+} from 'lucide-react'
 import { useBuilderStore, DEPOSIT_AMOUNT, DEPOSIT_PERCENTAGE } from '@/store/builderStore'
 import { formatPrice } from '@/lib/utils'
 import { cn } from '@/lib/utils'
@@ -13,7 +22,8 @@ import { cn } from '@/lib/utils'
 const quoteFormSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Please enter a valid email address'),
-  phone: z.string()
+  phone: z
+    .string()
     .min(10, 'Phone number must be at least 10 digits')
     .regex(/^[\d\s\-\(\)\+]+$/, 'Please enter a valid phone number'),
 })
@@ -61,13 +71,12 @@ function FormField({ label, error, children }: FormFieldProps) {
 export function Step6Quote() {
   const { getSummary } = useBuilderStore()
   const summary = getSummary()
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const depositAmount = summary.total > 5000 
-    ? Math.round(summary.total * DEPOSIT_PERCENTAGE)
-    : DEPOSIT_AMOUNT
+  const depositAmount =
+    summary.total > 5000 ? Math.round(summary.total * DEPOSIT_PERCENTAGE) : DEPOSIT_AMOUNT
 
   const {
     register,
@@ -147,7 +156,9 @@ export function Step6Quote() {
       {/* Header */}
       <div className="text-center space-y-2">
         <h2 className="text-2xl md:text-3xl font-serif text-gold">Secure Your Ring</h2>
-        <p className="text-white-off/60 text-sm">Reserve your custom creation with a refundable deposit</p>
+        <p className="text-white-off/60 text-sm">
+          Reserve your custom creation with a refundable deposit
+        </p>
       </div>
 
       {/* Compact Design Summary */}
@@ -156,12 +167,14 @@ export function Step6Quote() {
           <h3 className="text-gold text-xs uppercase tracking-[0.2em] font-sans">Your Design</h3>
           <span className="text-gold font-serif text-lg">{formatPrice(summary.total)}</span>
         </div>
-        
+
         <div className="flex flex-wrap gap-3 text-xs text-white-off/70">
           {summary.diamond && (
             <div className="flex items-center gap-1.5 bg-black/40 px-2.5 py-1.5 rounded-lg">
               <Diamond className="w-3.5 h-3.5 text-gold" />
-              <span>{summary.diamond.carat}ct {summary.diamond.cut}</span>
+              <span>
+                {summary.diamond.carat}ct {summary.diamond.cut}
+              </span>
             </div>
           )}
           {summary.setting && (
@@ -188,8 +201,10 @@ export function Step6Quote() {
               type="text"
               placeholder="John Smith"
               className={cn(
-                "w-full px-4 py-3 bg-black-soft border rounded-lg text-white-off placeholder:text-white-off/30 focus:outline-none transition-colors",
-                errors.name ? "border-red-400/50 focus:border-red-400" : "border-gold/30 focus:border-gold"
+                'w-full px-4 py-3 bg-black-soft border rounded-lg text-white-off placeholder:text-white-off/30 focus:outline-none transition-colors',
+                errors.name
+                  ? 'border-red-400/50 focus:border-red-400'
+                  : 'border-gold/30 focus:border-gold'
               )}
               disabled={isSubmitting}
             />
@@ -201,8 +216,10 @@ export function Step6Quote() {
               type="email"
               placeholder="john@example.com"
               className={cn(
-                "w-full px-4 py-3 bg-black-soft border rounded-lg text-white-off placeholder:text-white-off/30 focus:outline-none transition-colors",
-                errors.email ? "border-red-400/50 focus:border-red-400" : "border-gold/30 focus:border-gold"
+                'w-full px-4 py-3 bg-black-soft border rounded-lg text-white-off placeholder:text-white-off/30 focus:outline-none transition-colors',
+                errors.email
+                  ? 'border-red-400/50 focus:border-red-400'
+                  : 'border-gold/30 focus:border-gold'
               )}
               disabled={isSubmitting}
             />
@@ -214,8 +231,10 @@ export function Step6Quote() {
               type="tel"
               placeholder="(305) 555-1234"
               className={cn(
-                "w-full px-4 py-3 bg-black-soft border rounded-lg text-white-off placeholder:text-white-off/30 focus:outline-none transition-colors",
-                errors.phone ? "border-red-400/50 focus:border-red-400" : "border-gold/30 focus:border-gold"
+                'w-full px-4 py-3 bg-black-soft border rounded-lg text-white-off placeholder:text-white-off/30 focus:outline-none transition-colors',
+                errors.phone
+                  ? 'border-red-400/50 focus:border-red-400'
+                  : 'border-gold/30 focus:border-gold'
               )}
               disabled={isSubmitting}
             />
@@ -237,7 +256,8 @@ export function Step6Quote() {
           <div className="p-3 bg-black/30 rounded-lg">
             <p className="text-white-off/60 text-xs leading-relaxed">
               <CheckCircle className="w-3.5 h-3.5 inline-block mr-1.5 text-green-400" />
-              Your deposit is fully refundable within 48 hours of your consultation if you decide not to proceed.
+              Your deposit is fully refundable within 48 hours of your consultation if you decide
+              not to proceed.
             </p>
           </div>
         </div>
@@ -261,10 +281,8 @@ export function Step6Quote() {
           type="submit"
           disabled={isSubmitting}
           className={cn(
-            "w-full py-4 bg-gold text-black font-semibold text-sm tracking-widest uppercase rounded-lg transition-all shadow-gold",
-            isSubmitting 
-              ? "opacity-70 cursor-not-allowed" 
-              : "hover:bg-gold-light"
+            'w-full py-4 bg-gold text-black font-semibold text-sm tracking-widest uppercase rounded-lg transition-all shadow-gold',
+            isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:bg-gold-light'
           )}
         >
           {isSubmitting ? (

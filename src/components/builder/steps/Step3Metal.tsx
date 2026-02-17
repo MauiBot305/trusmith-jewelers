@@ -1,16 +1,16 @@
-'use client';
+'use client'
 
-import { useBuilderStore, BuilderMetal } from '@/store/builderStore';
-import { cn, formatPrice } from '@/lib/utils';
+import { useBuilderStore, BuilderMetal } from '@/store/builderStore'
+import { cn, formatPrice } from '@/lib/utils'
 
 interface MetalData {
-  id: string;
-  name: string;
-  hex: string;
-  modifier: number;
-  description: string;
-  benefits: string[];
-  disabled?: boolean;
+  id: string
+  name: string
+  hex: string
+  modifier: number
+  description: string
+  benefits: string[]
+  disabled?: boolean
 }
 
 const metalsData: MetalData[] = [
@@ -80,14 +80,14 @@ const metalsData: MetalData[] = [
     ],
     disabled: true,
   },
-];
+]
 
 export default function Step3Metal() {
-  const { metal, setMetal, completeStep } = useBuilderStore();
+  const { metal, setMetal, completeStep } = useBuilderStore()
 
   const handleSelectMetal = (m: MetalData) => {
-    if (m.disabled) return;
-    
+    if (m.disabled) return
+
     const builderMetal: BuilderMetal = {
       id: m.id,
       name: m.name,
@@ -96,12 +96,12 @@ export default function Step3Metal() {
       hex: m.hex,
       priceModifier: m.modifier,
       description: m.description,
-    };
-    setMetal(builderMetal);
-    completeStep(3);
-  };
+    }
+    setMetal(builderMetal)
+    completeStep(3)
+  }
 
-  const isSelected = (id: string) => metal?.id === id;
+  const isSelected = (id: string) => metal?.id === id
 
   return (
     <div className="bg-black-soft p-6 rounded-xl">
@@ -152,19 +152,14 @@ export default function Step3Metal() {
               m.disabled
                 ? 'opacity-60 cursor-not-allowed border-white-off/20'
                 : 'hover:scale-[1.02] hover:border-gold',
-              isSelected(m.id)
-                ? 'border-gold'
-                : 'border-transparent'
+              isSelected(m.id) ? 'border-gold' : 'border-transparent'
             )}
           >
             {/* Color Swatch */}
-            <div
-              className="h-32 relative"
-              style={{ backgroundColor: m.hex }}
-            >
+            <div className="h-32 relative" style={{ backgroundColor: m.hex }}>
               {/* Shine effect */}
               <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-black/20" />
-              
+
               {/* Coming Soon Badge */}
               {m.disabled && (
                 <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
@@ -198,7 +193,7 @@ export default function Step3Metal() {
             <div className="p-4 bg-black-deep flex-1">
               <h3 className="text-lg font-medium text-white-off mb-2">{m.name}</h3>
               <p className="text-white-off/60 text-sm mb-4">{m.description}</p>
-              
+
               {/* Benefits */}
               <ul className="space-y-1">
                 {m.benefits.map((benefit, i) => (
@@ -216,10 +211,11 @@ export default function Step3Metal() {
       {/* Info Note */}
       <div className="mt-6 p-4 bg-black-deep rounded-lg border border-gold/20">
         <p className="text-white-off/60 text-sm">
-          <span className="text-gold font-medium">Note:</span> All our metals are ethically sourced and come with a lifetime warranty. 
-          White gold rings receive complimentary rhodium replating for life.
+          <span className="text-gold font-medium">Note:</span> All our metals are ethically sourced
+          and come with a lifetime warranty. White gold rings receive complimentary rhodium
+          replating for life.
         </p>
       </div>
     </div>
-  );
+  )
 }

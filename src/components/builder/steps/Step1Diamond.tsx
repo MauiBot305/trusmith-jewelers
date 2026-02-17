@@ -1,10 +1,10 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { useBuilderStore } from '@/store/builderStore';
-import { Diamond } from '@/types/diamond';
-import { cn, formatPrice } from '@/lib/utils';
+import { useState } from 'react'
+import Link from 'next/link'
+import { useBuilderStore } from '@/store/builderStore'
+import { Diamond } from '@/types/diamond'
+import { cn, formatPrice } from '@/lib/utils'
 
 // Cut icons as simple SVG components
 const CutIcons: Record<string, JSX.Element> = {
@@ -14,53 +14,91 @@ const CutIcons: Record<string, JSX.Element> = {
       <circle cx="20" cy="20" r="8" fill="currentColor" opacity="0.3" />
     </svg>
   ),
-  'Oval': (
+  Oval: (
     <svg viewBox="0 0 40 40" className="w-8 h-8" fill="currentColor">
       <ellipse cx="20" cy="20" rx="10" ry="16" fill="none" stroke="currentColor" strokeWidth="2" />
     </svg>
   ),
-  'Princess': (
+  Princess: (
     <svg viewBox="0 0 40 40" className="w-8 h-8" fill="currentColor">
       <rect x="8" y="8" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" />
     </svg>
   ),
-  'Cushion': (
+  Cushion: (
     <svg viewBox="0 0 40 40" className="w-8 h-8" fill="currentColor">
-      <rect x="8" y="8" width="24" height="24" rx="6" fill="none" stroke="currentColor" strokeWidth="2" />
+      <rect
+        x="8"
+        y="8"
+        width="24"
+        height="24"
+        rx="6"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      />
     </svg>
   ),
-  'Emerald': (
+  Emerald: (
     <svg viewBox="0 0 40 40" className="w-8 h-8" fill="currentColor">
-      <polygon points="12,6 28,6 34,12 34,28 28,34 12,34 6,28 6,12" fill="none" stroke="currentColor" strokeWidth="2" />
+      <polygon
+        points="12,6 28,6 34,12 34,28 28,34 12,34 6,28 6,12"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      />
     </svg>
   ),
-  'Marquise': (
+  Marquise: (
     <svg viewBox="0 0 40 40" className="w-8 h-8" fill="currentColor">
       <ellipse cx="20" cy="20" rx="8" ry="18" fill="none" stroke="currentColor" strokeWidth="2" />
     </svg>
   ),
-  'Pear': (
+  Pear: (
     <svg viewBox="0 0 40 40" className="w-8 h-8" fill="currentColor">
-      <path d="M20 4 C10 14 8 24 20 36 C32 24 30 14 20 4" fill="none" stroke="currentColor" strokeWidth="2" />
+      <path
+        d="M20 4 C10 14 8 24 20 36 C32 24 30 14 20 4"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      />
     </svg>
   ),
-  'Radiant': (
+  Radiant: (
     <svg viewBox="0 0 40 40" className="w-8 h-8" fill="currentColor">
-      <polygon points="12,4 28,4 36,12 36,28 28,36 12,36 4,28 4,12" fill="none" stroke="currentColor" strokeWidth="2" />
+      <polygon
+        points="12,4 28,4 36,12 36,28 28,36 12,36 4,28 4,12"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      />
     </svg>
   ),
-  'Asscher': (
+  Asscher: (
     <svg viewBox="0 0 40 40" className="w-8 h-8" fill="currentColor">
       <rect x="8" y="8" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" />
-      <rect x="14" y="14" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.5" />
+      <rect
+        x="14"
+        y="14"
+        width="12"
+        height="12"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1"
+        opacity="0.5"
+      />
     </svg>
   ),
-  'Heart': (
+  Heart: (
     <svg viewBox="0 0 40 40" className="w-8 h-8" fill="currentColor">
-      <path d="M20 35 C10 25 4 18 4 12 C4 6 10 4 15 4 C18 4 20 6 20 8 C20 6 22 4 25 4 C30 4 36 6 36 12 C36 18 30 25 20 35" fill="none" stroke="currentColor" strokeWidth="2" />
+      <path
+        d="M20 35 C10 25 4 18 4 12 C4 6 10 4 15 4 C18 4 20 6 20 8 C20 6 22 4 25 4 C30 4 36 6 36 12 C36 18 30 25 20 35"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      />
     </svg>
   ),
-};
+}
 
 const cuts = [
   'Round Brilliant',
@@ -73,10 +111,18 @@ const cuts = [
   'Radiant',
   'Asscher',
   'Heart',
-];
+]
 
 // Sample diamond data
-const makeDiamond = (d: { id: string; cut: string; carat: number; color: string; clarity: string; certification: string; price: number }): Diamond => ({
+const makeDiamond = (d: {
+  id: string
+  cut: string
+  carat: number
+  color: string
+  clarity: string
+  certification: string
+  price: number
+}): Diamond => ({
   ...d,
   sku: d.id,
   certificateNumber: '',
@@ -88,65 +134,316 @@ const makeDiamond = (d: { id: string; cut: string; carat: number; color: string;
   description: null,
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
-});
+})
 
 const sampleDiamondsRaw = [
   // Round Brilliant
-  { id: 'rb-1', cut: 'Round Brilliant', carat: 1.01, color: 'D', clarity: 'VS1', certification: 'GIA', price: 5200 },
-  { id: 'rb-2', cut: 'Round Brilliant', carat: 0.75, color: 'E', clarity: 'VVS2', certification: 'GIA', price: 3800 },
-  { id: 'rb-3', cut: 'Round Brilliant', carat: 1.50, color: 'F', clarity: 'VS2', certification: 'IGI', price: 7200 },
-  { id: 'rb-4', cut: 'Round Brilliant', carat: 0.52, color: 'G', clarity: 'SI1', certification: 'GIA', price: 1650 },
+  {
+    id: 'rb-1',
+    cut: 'Round Brilliant',
+    carat: 1.01,
+    color: 'D',
+    clarity: 'VS1',
+    certification: 'GIA',
+    price: 5200,
+  },
+  {
+    id: 'rb-2',
+    cut: 'Round Brilliant',
+    carat: 0.75,
+    color: 'E',
+    clarity: 'VVS2',
+    certification: 'GIA',
+    price: 3800,
+  },
+  {
+    id: 'rb-3',
+    cut: 'Round Brilliant',
+    carat: 1.5,
+    color: 'F',
+    clarity: 'VS2',
+    certification: 'IGI',
+    price: 7200,
+  },
+  {
+    id: 'rb-4',
+    cut: 'Round Brilliant',
+    carat: 0.52,
+    color: 'G',
+    clarity: 'SI1',
+    certification: 'GIA',
+    price: 1650,
+  },
   // Oval
-  { id: 'ov-1', cut: 'Oval', carat: 1.20, color: 'D', clarity: 'VVS1', certification: 'GIA', price: 6100 },
-  { id: 'ov-2', cut: 'Oval', carat: 0.90, color: 'E', clarity: 'VS1', certification: 'GIA', price: 4200 },
-  { id: 'ov-3', cut: 'Oval', carat: 1.75, color: 'G', clarity: 'VS2', certification: 'IGI', price: 7800 },
+  {
+    id: 'ov-1',
+    cut: 'Oval',
+    carat: 1.2,
+    color: 'D',
+    clarity: 'VVS1',
+    certification: 'GIA',
+    price: 6100,
+  },
+  {
+    id: 'ov-2',
+    cut: 'Oval',
+    carat: 0.9,
+    color: 'E',
+    clarity: 'VS1',
+    certification: 'GIA',
+    price: 4200,
+  },
+  {
+    id: 'ov-3',
+    cut: 'Oval',
+    carat: 1.75,
+    color: 'G',
+    clarity: 'VS2',
+    certification: 'IGI',
+    price: 7800,
+  },
   // Princess
-  { id: 'pr-1', cut: 'Princess', carat: 1.00, color: 'E', clarity: 'VS2', certification: 'GIA', price: 4500 },
-  { id: 'pr-2', cut: 'Princess', carat: 0.80, color: 'F', clarity: 'VVS2', certification: 'GIA', price: 3600 },
-  { id: 'pr-3', cut: 'Princess', carat: 1.30, color: 'G', clarity: 'SI1', certification: 'IGI', price: 5100 },
+  {
+    id: 'pr-1',
+    cut: 'Princess',
+    carat: 1.0,
+    color: 'E',
+    clarity: 'VS2',
+    certification: 'GIA',
+    price: 4500,
+  },
+  {
+    id: 'pr-2',
+    cut: 'Princess',
+    carat: 0.8,
+    color: 'F',
+    clarity: 'VVS2',
+    certification: 'GIA',
+    price: 3600,
+  },
+  {
+    id: 'pr-3',
+    cut: 'Princess',
+    carat: 1.3,
+    color: 'G',
+    clarity: 'SI1',
+    certification: 'IGI',
+    price: 5100,
+  },
   // Cushion
-  { id: 'cu-1', cut: 'Cushion', carat: 1.15, color: 'D', clarity: 'VS1', certification: 'GIA', price: 5400 },
-  { id: 'cu-2', cut: 'Cushion', carat: 0.85, color: 'E', clarity: 'VS2', certification: 'GIA', price: 3900 },
-  { id: 'cu-3', cut: 'Cushion', carat: 2.00, color: 'H', clarity: 'SI1', certification: 'IGI', price: 7500 },
+  {
+    id: 'cu-1',
+    cut: 'Cushion',
+    carat: 1.15,
+    color: 'D',
+    clarity: 'VS1',
+    certification: 'GIA',
+    price: 5400,
+  },
+  {
+    id: 'cu-2',
+    cut: 'Cushion',
+    carat: 0.85,
+    color: 'E',
+    clarity: 'VS2',
+    certification: 'GIA',
+    price: 3900,
+  },
+  {
+    id: 'cu-3',
+    cut: 'Cushion',
+    carat: 2.0,
+    color: 'H',
+    clarity: 'SI1',
+    certification: 'IGI',
+    price: 7500,
+  },
   // Emerald
-  { id: 'em-1', cut: 'Emerald', carat: 1.25, color: 'E', clarity: 'VVS2', certification: 'GIA', price: 5800 },
-  { id: 'em-2', cut: 'Emerald', carat: 1.00, color: 'F', clarity: 'VS1', certification: 'GIA', price: 4700 },
-  { id: 'em-3', cut: 'Emerald', carat: 1.80, color: 'G', clarity: 'VS2', certification: 'IGI', price: 7100 },
+  {
+    id: 'em-1',
+    cut: 'Emerald',
+    carat: 1.25,
+    color: 'E',
+    clarity: 'VVS2',
+    certification: 'GIA',
+    price: 5800,
+  },
+  {
+    id: 'em-2',
+    cut: 'Emerald',
+    carat: 1.0,
+    color: 'F',
+    clarity: 'VS1',
+    certification: 'GIA',
+    price: 4700,
+  },
+  {
+    id: 'em-3',
+    cut: 'Emerald',
+    carat: 1.8,
+    color: 'G',
+    clarity: 'VS2',
+    certification: 'IGI',
+    price: 7100,
+  },
   // Marquise
-  { id: 'mq-1', cut: 'Marquise', carat: 1.10, color: 'D', clarity: 'VS2', certification: 'GIA', price: 5100 },
-  { id: 'mq-2', cut: 'Marquise', carat: 0.70, color: 'E', clarity: 'VVS1', certification: 'GIA', price: 3400 },
-  { id: 'mq-3', cut: 'Marquise', carat: 1.45, color: 'F', clarity: 'SI1', certification: 'IGI', price: 5900 },
+  {
+    id: 'mq-1',
+    cut: 'Marquise',
+    carat: 1.1,
+    color: 'D',
+    clarity: 'VS2',
+    certification: 'GIA',
+    price: 5100,
+  },
+  {
+    id: 'mq-2',
+    cut: 'Marquise',
+    carat: 0.7,
+    color: 'E',
+    clarity: 'VVS1',
+    certification: 'GIA',
+    price: 3400,
+  },
+  {
+    id: 'mq-3',
+    cut: 'Marquise',
+    carat: 1.45,
+    color: 'F',
+    clarity: 'SI1',
+    certification: 'IGI',
+    price: 5900,
+  },
   // Pear
-  { id: 'pe-1', cut: 'Pear', carat: 1.05, color: 'E', clarity: 'VS1', certification: 'GIA', price: 4900 },
-  { id: 'pe-2', cut: 'Pear', carat: 0.80, color: 'F', clarity: 'VVS2', certification: 'GIA', price: 3700 },
-  { id: 'pe-3', cut: 'Pear', carat: 1.60, color: 'G', clarity: 'VS2', certification: 'IGI', price: 6800 },
+  {
+    id: 'pe-1',
+    cut: 'Pear',
+    carat: 1.05,
+    color: 'E',
+    clarity: 'VS1',
+    certification: 'GIA',
+    price: 4900,
+  },
+  {
+    id: 'pe-2',
+    cut: 'Pear',
+    carat: 0.8,
+    color: 'F',
+    clarity: 'VVS2',
+    certification: 'GIA',
+    price: 3700,
+  },
+  {
+    id: 'pe-3',
+    cut: 'Pear',
+    carat: 1.6,
+    color: 'G',
+    clarity: 'VS2',
+    certification: 'IGI',
+    price: 6800,
+  },
   // Radiant
-  { id: 'ra-1', cut: 'Radiant', carat: 1.20, color: 'D', clarity: 'VVS2', certification: 'GIA', price: 5600 },
-  { id: 'ra-2', cut: 'Radiant', carat: 0.95, color: 'E', clarity: 'VS1', certification: 'GIA', price: 4400 },
-  { id: 'ra-3', cut: 'Radiant', carat: 1.70, color: 'F', clarity: 'SI1', certification: 'IGI', price: 6500 },
+  {
+    id: 'ra-1',
+    cut: 'Radiant',
+    carat: 1.2,
+    color: 'D',
+    clarity: 'VVS2',
+    certification: 'GIA',
+    price: 5600,
+  },
+  {
+    id: 'ra-2',
+    cut: 'Radiant',
+    carat: 0.95,
+    color: 'E',
+    clarity: 'VS1',
+    certification: 'GIA',
+    price: 4400,
+  },
+  {
+    id: 'ra-3',
+    cut: 'Radiant',
+    carat: 1.7,
+    color: 'F',
+    clarity: 'SI1',
+    certification: 'IGI',
+    price: 6500,
+  },
   // Asscher
-  { id: 'as-1', cut: 'Asscher', carat: 1.00, color: 'D', clarity: 'VVS1', certification: 'GIA', price: 5300 },
-  { id: 'as-2', cut: 'Asscher', carat: 0.85, color: 'E', clarity: 'VS2', certification: 'GIA', price: 4100 },
-  { id: 'as-3', cut: 'Asscher', carat: 1.40, color: 'G', clarity: 'VS1', certification: 'IGI', price: 6200 },
+  {
+    id: 'as-1',
+    cut: 'Asscher',
+    carat: 1.0,
+    color: 'D',
+    clarity: 'VVS1',
+    certification: 'GIA',
+    price: 5300,
+  },
+  {
+    id: 'as-2',
+    cut: 'Asscher',
+    carat: 0.85,
+    color: 'E',
+    clarity: 'VS2',
+    certification: 'GIA',
+    price: 4100,
+  },
+  {
+    id: 'as-3',
+    cut: 'Asscher',
+    carat: 1.4,
+    color: 'G',
+    clarity: 'VS1',
+    certification: 'IGI',
+    price: 6200,
+  },
   // Heart
-  { id: 'he-1', cut: 'Heart', carat: 1.00, color: 'D', clarity: 'VS1', certification: 'GIA', price: 5000 },
-  { id: 'he-2', cut: 'Heart', carat: 0.75, color: 'E', clarity: 'VVS2', certification: 'GIA', price: 3500 },
-  { id: 'he-3', cut: 'Heart', carat: 1.50, color: 'F', clarity: 'VS2', certification: 'IGI', price: 6700 },
-];
+  {
+    id: 'he-1',
+    cut: 'Heart',
+    carat: 1.0,
+    color: 'D',
+    clarity: 'VS1',
+    certification: 'GIA',
+    price: 5000,
+  },
+  {
+    id: 'he-2',
+    cut: 'Heart',
+    carat: 0.75,
+    color: 'E',
+    clarity: 'VVS2',
+    certification: 'GIA',
+    price: 3500,
+  },
+  {
+    id: 'he-3',
+    cut: 'Heart',
+    carat: 1.5,
+    color: 'F',
+    clarity: 'VS2',
+    certification: 'IGI',
+    price: 6700,
+  },
+]
 
-const sampleDiamonds: Diamond[] = sampleDiamondsRaw.map(makeDiamond);
+const sampleDiamonds: Diamond[] = sampleDiamondsRaw.map(makeDiamond)
 
 // 4Cs educational tooltips
 const tooltips = {
   cut: 'Cut determines how well light reflects through the diamond. Excellent cuts maximize brilliance.',
-  carat: 'Carat measures weight, not size. 1 carat = 0.2 grams. Larger carats are exponentially rarer.',
-  color: 'Color grades D-Z measure colorlessness. D is perfectly colorless; G-H are excellent values.',
-  clarity: 'Clarity measures inclusions. VVS = very very slight, VS = very slight, SI = slight inclusions.',
-};
+  carat:
+    'Carat measures weight, not size. 1 carat = 0.2 grams. Larger carats are exponentially rarer.',
+  color:
+    'Color grades D-Z measure colorlessness. D is perfectly colorless; G-H are excellent values.',
+  clarity:
+    'Clarity measures inclusions. VVS = very very slight, VS = very slight, SI = slight inclusions.',
+}
 
 interface TooltipProps {
-  label: string;
-  content: string;
+  label: string
+  content: string
 }
 
 function Tooltip({ label, content }: TooltipProps) {
@@ -157,26 +454,26 @@ function Tooltip({ label, content }: TooltipProps) {
         {content}
       </div>
     </div>
-  );
+  )
 }
 
 export default function Step1Diamond() {
-  const { diamond, setDiamond, completeStep } = useBuilderStore();
-  const [selectedCut, setSelectedCut] = useState<string | null>(null);
+  const { diamond, setDiamond, completeStep } = useBuilderStore()
+  const [selectedCut, setSelectedCut] = useState<string | null>(null)
 
   const filteredDiamonds: Diamond[] = selectedCut
     ? sampleDiamonds.filter((d) => d.cut === selectedCut)
-    : [];
+    : []
 
   const handleSelectDiamond = (d: Diamond) => {
-    setDiamond(d);
-    completeStep(1);
-  };
+    setDiamond(d)
+    completeStep(1)
+  }
 
   const handleChangeDiamond = () => {
-    setDiamond(null);
-    setSelectedCut(null);
-  };
+    setDiamond(null)
+    setSelectedCut(null)
+  }
 
   return (
     <div className="bg-black-soft p-6 rounded-xl">
@@ -205,7 +502,8 @@ export default function Step1Diamond() {
                   <span className="text-gold font-semibold text-lg">Selected ✓</span>
                 </div>
                 <p className="text-white-off">
-                  {diamond.carat}ct {diamond.cut} · {diamond.color} Color · {diamond.clarity} · {diamond.certification}
+                  {diamond.carat}ct {diamond.cut} · {diamond.color} Color · {diamond.clarity} ·{' '}
+                  {diamond.certification}
                 </p>
                 <p className="text-gold text-xl font-semibold mt-1">{formatPrice(diamond.price)}</p>
               </div>
@@ -258,7 +556,7 @@ export default function Step1Diamond() {
                     className={cn(
                       'p-4 rounded-lg text-left transition-all duration-200',
                       'bg-black-deep hover:border-gold border-2',
-                      (diamond as import("@/types/diamond").Diamond | null)?.id === d.id
+                      (diamond as import('@/types/diamond').Diamond | null)?.id === d.id
                         ? 'border-gold'
                         : 'border-transparent'
                     )}
@@ -298,5 +596,5 @@ export default function Step1Diamond() {
         </Link>
       </div>
     </div>
-  );
+  )
 }
