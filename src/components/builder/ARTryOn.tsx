@@ -44,7 +44,9 @@ interface ARTryOnProps {
 
 export function ARTryOn({ ringModel = '/models/ring-placeholder.glb', className }: ARTryOnProps) {
   const [selectedHand, setSelectedHand] = useState(handPresets[0])
-  const [show3D, setShow3D] = useState(true)
+  // Disabled 3D viewer - model files not yet available (causes crash)
+  // TODO: Re-enable when .glb models are added to /public/models/
+  const [show3D, setShow3D] = useState(false)
 
   // Check if iOS for USDZ AR Quick Look
   const isIOS =
