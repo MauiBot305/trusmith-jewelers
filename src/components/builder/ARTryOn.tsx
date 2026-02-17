@@ -27,7 +27,7 @@ interface ARTryOnProps {
   className?: string
 }
 
-export function ARTryOn({ ringModel = '/models/rings/SM_Solitaire.glb', className }: ARTryOnProps) {
+export function ARTryOn({ ringModel = '/models/rings/SM_HexaRing.glb', className }: ARTryOnProps) {
   const [mode, setMode] = useState<'preset' | 'camera'>('preset')
   const [selectedHand, setSelectedHand] = useState(handPresets[0])
   const [isCameraReady, setIsCameraReady] = useState(false)

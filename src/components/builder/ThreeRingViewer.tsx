@@ -86,7 +86,7 @@ function RingModel({ url, position = [0, -0.5, 0], rotation = [0, 0, 0], scale =
 }
 
 // Preload the default ring model
-useGLTF.preload('/models/rings/SM_Solitaire.glb')
+useGLTF.preload('/models/rings/SM_HexaRing.glb')
 
 interface ThreeRingViewerProps {
   modelUrl: string
