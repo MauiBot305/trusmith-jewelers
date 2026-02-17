@@ -11,10 +11,49 @@
  * - Add depth buffer for hand occlusion effect
  */
 
-import { useRef, Suspense } from 'react'
+import { useRef, Suspense, Component, type ErrorInfo, type ReactNode } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, useGLTF, Environment, ContactShadows } from '@react-three/drei'
 import type { Mesh } from 'three'
+
+// Error boundary for 3D rendering errors
+interface ErrorBoundaryProps {
+  children: ReactNode
+  fallback?: ReactNode
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean
+}
+
+class ThreeErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
+    super(props)
+    this.state = { hasError: false }
+  }
+
+  static getDerivedStateFromError(): ErrorBoundaryState {
+    return { hasError: true }
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error('3D Viewer Error:', error, errorInfo)
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback || (
+        <div className="w-full h-full flex items-center justify-center bg-black/20 rounded-lg">
+          <div className="text-center text-white-off/60">
+            <p className="text-sm">3D Preview unavailable</p>
+            <p className="text-xs opacity-60">Please try refreshing the page</p>
+          </div>
+        </div>
+      )
+    }
+    return this.props.children
+  }
+}
 
 interface RingModelProps {
   url: string
@@ -88,36 +127,38 @@ interface ThreeRingViewerProps {
 
 export default function ThreeRingViewer({ modelUrl }: ThreeRingViewerProps) {
   return (
-    <Canvas
-      camera={{ position: [0, 0.5, 2.5], fov: 45 }}
-      gl={{ antialias: true, alpha: true }}
-      style={{ background: 'transparent' }}
-    >
-      <ambientLight intensity={0.5} />
-      <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1.5} castShadow />
-      <pointLight position={[-5, 5, -5]} intensity={0.5} color="#D4AF37" />
+    <ThreeErrorBoundary>
+      <Canvas
+        camera={{ position: [0, 0.5, 2.5], fov: 45 }}
+        gl={{ antialias: true, alpha: true }}
+        style={{ background: 'transparent' }}
+      >
+        <ambientLight intensity={0.5} />
+        <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1.5} castShadow />
+        <pointLight position={[-5, 5, -5]} intensity={0.5} color="#D4AF37" />
 
-      <Suspense fallback={null}>
-        <RingModel url={modelUrl} />
-        <DiamondAccent />
-        <Environment preset="studio" />
-        <ContactShadows
-          position={[0, -0.8, 0]}
-          opacity={0.4}
-          scale={3}
-          blur={2}
-          far={1}
-          color="#000"
+        <Suspense fallback={null}>
+          <RingModel url={modelUrl} />
+          <DiamondAccent />
+          <Environment preset="studio" />
+          <ContactShadows
+            position={[0, -0.8, 0]}
+            opacity={0.4}
+            scale={3}
+            blur={2}
+            far={1}
+            color="#000"
+          />
+        </Suspense>
+
+        <OrbitControls
+          enablePan={false}
+          enableZoom={false}
+          minPolarAngle={Math.PI / 4}
+          maxPolarAngle={Math.PI / 1.5}
+          autoRotate={false}
         />
-      </Suspense>
-
-      <OrbitControls
-        enablePan={false}
-        enableZoom={false}
-        minPolarAngle={Math.PI / 4}
-        maxPolarAngle={Math.PI / 1.5}
-        autoRotate={false}
-      />
-    </Canvas>
+      </Canvas>
+    </ThreeErrorBoundary>
   )
 }
