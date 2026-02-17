@@ -34,11 +34,11 @@ const PRODUCT_IMAGES = {
   bracelet: [
     'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=800&q=80',
     'https://images.unsplash.com/photo-1583292650898-7d22cd27ca6f?w=800&q=80',
-    'https://images.unsplash.com/photo-1573408301185-9519f94816b5?w=800&q=80',
+    'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=800&q=80',
   ],
   chain: [
     'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=800&q=80',
-    'https://images.unsplash.com/photo-1576022162028-ffac5e1a70dd?w=800&q=80',
+    'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=800&q=80',
     'https://images.unsplash.com/photo-1588444837495-c6cfeb53f32d?w=800&q=80',
   ],
 }
