@@ -4,101 +4,75 @@
  * ThreeRingViewer — dynamically imported 3D ring viewer
  * Uses @react-three/fiber + @react-three/drei
  * Heavy bundle — always dynamic import this component
- *
- * TODO Phase 2 (WebAR):
- * - Replace static hand SVG with MediaPipe hand tracking
- * - Align ring mesh to detected ring finger position
- * - Add depth buffer for hand occlusion effect
  */
 
-import { useRef, Suspense, Component, type ErrorInfo, type ReactNode } from 'react'
+import React, { useRef, Suspense, useMemo } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, useGLTF, Environment, ContactShadows } from '@react-three/drei'
-import type { Mesh } from 'three'
-
-// Error boundary for 3D rendering errors
-interface ErrorBoundaryProps {
-  children: ReactNode
-  fallback?: ReactNode
-}
-
-interface ErrorBoundaryState {
-  hasError: boolean
-}
-
-class ThreeErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  constructor(props: ErrorBoundaryProps) {
-    super(props)
-    this.state = { hasError: false }
-  }
-
-  static getDerivedStateFromError(): ErrorBoundaryState {
-    return { hasError: true }
-  }
-
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('3D Viewer Error:', error, errorInfo)
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return this.props.fallback || (
-        <div className="w-full h-full flex items-center justify-center bg-black/20 rounded-lg">
-          <div className="text-center text-white-off/60">
-            <p className="text-sm">3D Preview unavailable</p>
-            <p className="text-xs opacity-60">Please try refreshing the page</p>
-          </div>
-        </div>
-      )
-    }
-    return this.props.children
-  }
-}
+import * as THREE from 'three'
 
 interface RingModelProps {
   url: string
+  metalColor: string
 }
 
-function RingModel({ url }: RingModelProps) {
-  const meshRef = useRef<Mesh>(null)
-  const groupRef = useRef<import('three').Group>(null)
-  
-  // Load the GLTF model
+function RingModel({ url, metalColor }: RingModelProps) {
   const { scene } = useGLTF(url)
+  const ref = useRef<THREE.Group>(null)
 
   // Slow rotation for display
+  useFrame((_, delta) => {
+    if (ref.current) {
+      ref.current.rotation.y += delta * 0.4
+    }
+  })
+
+  // Clone and apply metal color to all meshes
+  const clonedScene = useMemo(() => {
+    const cloned = scene.clone(true)
+    cloned.traverse((node) => {
+      if ((node as THREE.Mesh).isMesh) {
+        const mesh = node as THREE.Mesh
+        mesh.material = new THREE.MeshStandardMaterial({
+          color: new THREE.Color(metalColor),
+          metalness: 0.95,
+          roughness: 0.05,
+          envMapIntensity: 2,
+        })
+      }
+    })
+    return cloned
+  }, [scene, metalColor])
+
+  return <primitive ref={ref} object={clonedScene} scale={2} position={[0, -0.3, 0]} />
+}
+
+// Fallback ring using torus geometry when model fails to load
+function FallbackRing({ metalColor }: { metalColor: string }) {
+  const meshRef = useRef<THREE.Mesh>(null)
+
   useFrame((_, delta) => {
     if (meshRef.current) {
       meshRef.current.rotation.y += delta * 0.4
     }
-    if (groupRef.current) {
-      groupRef.current.rotation.y += delta * 0.4
-    }
   })
 
-  if (scene) {
-    return (
-      <group ref={groupRef}>
-        <primitive object={scene.clone()} scale={15} position={[0, -0.5, 0]} />
-      </group>
-    )
-  }
-
-  // Placeholder ring using torus geometry
   return (
     <mesh ref={meshRef} position={[0, -0.2, 0]}>
       <torusGeometry args={[0.6, 0.12, 32, 64]} />
-      <meshStandardMaterial color="#D4AF37" metalness={0.95} roughness={0.05} envMapIntensity={2} />
+      <meshStandardMaterial
+        color={metalColor}
+        metalness={0.95}
+        roughness={0.05}
+        envMapIntensity={2}
+      />
     </mesh>
   )
 }
 
-// Preload the default ring model
-useGLTF.preload('/models/rings/SM_Solitaire.glb')
-
 // Diamond accent on top of ring
 function DiamondAccent() {
-  const meshRef = useRef<Mesh>(null)
+  const meshRef = useRef<THREE.Mesh>(null)
 
   useFrame((_, delta) => {
     if (meshRef.current) {
@@ -121,13 +95,28 @@ function DiamondAccent() {
   )
 }
 
-interface ThreeRingViewerProps {
-  modelUrl: string
+// Error boundary for model loading
+function ModelWithFallback({ url, metalColor }: RingModelProps) {
+  try {
+    return <RingModel url={url} metalColor={metalColor} />
+  } catch {
+    return <FallbackRing metalColor={metalColor} />
+  }
 }
 
-export default function ThreeRingViewer({ modelUrl }: ThreeRingViewerProps) {
+interface ThreeRingViewerProps {
+  modelUrl?: string
+  metalColor?: string
+  className?: string
+}
+
+export default function ThreeRingViewer({
+  modelUrl = '/models/ring-placeholder.glb',
+  metalColor = '#D4AF37',
+  className = '',
+}: ThreeRingViewerProps) {
   return (
-    <ThreeErrorBoundary>
+    <div className={`w-full h-full min-h-[300px] ${className}`}>
       <Canvas
         camera={{ position: [0, 0.5, 2.5], fov: 45 }}
         gl={{ antialias: true, alpha: true }}
@@ -137,8 +126,12 @@ export default function ThreeRingViewer({ modelUrl }: ThreeRingViewerProps) {
         <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1.5} castShadow />
         <pointLight position={[-5, 5, -5]} intensity={0.5} color="#D4AF37" />
 
-        <Suspense fallback={null}>
-          <RingModel url={modelUrl} />
+        <Suspense fallback={<FallbackRing metalColor={metalColor} />}>
+          {modelUrl ? (
+            <ModelWithFallback url={modelUrl} metalColor={metalColor} />
+          ) : (
+            <FallbackRing metalColor={metalColor} />
+          )}
           <DiamondAccent />
           <Environment preset="studio" />
           <ContactShadows
@@ -153,12 +146,14 @@ export default function ThreeRingViewer({ modelUrl }: ThreeRingViewerProps) {
 
         <OrbitControls
           enablePan={false}
-          enableZoom={false}
+          enableZoom={true}
+          minDistance={1.5}
+          maxDistance={5}
           minPolarAngle={Math.PI / 4}
           maxPolarAngle={Math.PI / 1.5}
           autoRotate={false}
         />
       </Canvas>
-    </ThreeErrorBoundary>
+    </div>
   )
 }

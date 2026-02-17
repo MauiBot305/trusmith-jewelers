@@ -8,7 +8,6 @@ import { formatPrice } from '@/lib/utils'
 import { cn } from '@/lib/utils'
 import { getRingModelUrl } from './Step2Setting'
 
-// Lazy load AR component
 const ARTryOn = dynamic(() => import('@/components/builder/ARTryOn'), {
   ssr: false,
   loading: () => (
@@ -23,7 +22,6 @@ const ARTryOn = dynamic(() => import('@/components/builder/ARTryOn'), {
   ),
 })
 
-// ── Angle View Placeholder ─────────────────────────────────────────────────────
 interface AngleViewProps {
   label: string
   gradient: string
@@ -48,7 +46,6 @@ function AngleViewPlaceholder({ label, gradient }: AngleViewProps) {
   )
 }
 
-// ── Summary Line Item ──────────────────────────────────────────────────────────
 interface SummaryLineProps {
   icon: React.ReactNode
   label: string
@@ -72,16 +69,11 @@ function SummaryLine({ icon, label, value, price, className }: SummaryLineProps)
   )
 }
 
-// ── Main Step 5 Component ──────────────────────────────────────────────────────
 export function Step5Preview() {
   const { diamond, setting, metal, engraving, ringSize, getTotal, setStep } = useBuilderStore()
 
   const total = getTotal()
-  
-  // Get the model URL based on selected setting
   const ringModelUrl = getRingModelUrl(setting?.id)
-  
-  // Get the metal color from the selected metal's hex, default to yellow gold
   const metalColor = metal?.hex || '#D4AF37'
 
   const handleEditDesign = () => {
@@ -94,7 +86,6 @@ export function Step5Preview() {
 
   return (
     <div className="w-full max-w-5xl mx-auto space-y-8">
-      {/* Header */}
       <div className="text-center space-y-2">
         <h2 className="text-2xl md:text-3xl font-serif text-gold">Your Custom Creation</h2>
         <p className="text-white-off/60 text-sm">
@@ -103,15 +94,12 @@ export function Step5Preview() {
       </div>
 
       <div className="grid lg:grid-cols-2 gap-8">
-        {/* Left Column: Design Summary */}
         <div className="space-y-6">
-          {/* Design Summary Card */}
           <div className="bg-black-soft border border-gold/20 rounded-2xl p-6 space-y-1">
             <h3 className="text-gold text-xs uppercase tracking-[0.25em] font-sans mb-4">
               Design Summary
             </h3>
 
-            {/* Diamond */}
             {diamond && (
               <SummaryLine
                 icon={<Diamond className="w-4 h-4" />}
@@ -121,7 +109,6 @@ export function Step5Preview() {
               />
             )}
 
-            {/* Setting */}
             {setting && (
               <SummaryLine
                 icon={<Settings2 className="w-4 h-4" />}
@@ -131,7 +118,6 @@ export function Step5Preview() {
               />
             )}
 
-            {/* Metal */}
             {metal && (
               <SummaryLine
                 icon={<Gem className="w-4 h-4" />}
@@ -143,7 +129,6 @@ export function Step5Preview() {
               />
             )}
 
-            {/* Engraving (if set) */}
             {engraving && (
               <SummaryLine
                 icon={<PenLine className="w-4 h-4" />}
@@ -152,7 +137,6 @@ export function Step5Preview() {
               />
             )}
 
-            {/* Ring Size (if set) */}
             {ringSize && (
               <SummaryLine
                 icon={<Ruler className="w-4 h-4" />}
@@ -161,7 +145,6 @@ export function Step5Preview() {
               />
             )}
 
-            {/* Total */}
             <div className="pt-4 mt-4 border-t border-gold/30">
               <div className="flex items-center justify-between">
                 <span className="text-white-off font-semibold">Estimated Total</span>
@@ -173,7 +156,6 @@ export function Step5Preview() {
             </div>
           </div>
 
-          {/* Multiple Angle Views */}
           <div className="space-y-3">
             <h3 className="text-gold text-xs uppercase tracking-[0.25em] font-sans">Ring Views</h3>
             <div className="grid grid-cols-2 gap-3">
@@ -191,9 +173,7 @@ export function Step5Preview() {
           </div>
         </div>
 
-        {/* Right Column: 3D/AR Preview */}
         <div className="space-y-6">
-          {/* 3D Viewer */}
           <div className="space-y-3">
             <h3 className="text-gold text-xs uppercase tracking-[0.25em] font-sans">3D Preview</h3>
             <div className="bg-black-soft border border-gold/20 rounded-2xl p-4 overflow-hidden">
@@ -209,7 +189,6 @@ export function Step5Preview() {
             </div>
           </div>
 
-          {/* See It On Your Hand */}
           <div className="p-6 bg-gradient-to-br from-gold/10 to-gold/5 border border-gold/30 rounded-2xl">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center">
@@ -230,7 +209,6 @@ export function Step5Preview() {
         </div>
       </div>
 
-      {/* CTAs */}
       <div className="flex flex-col sm:flex-row gap-4 pt-6 border-t border-white/10">
         <button
           onClick={handleEditDesign}
