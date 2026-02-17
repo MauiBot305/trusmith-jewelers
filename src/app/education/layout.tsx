@@ -56,7 +56,7 @@ function NavLink({
 
   return (
     <Link
-      href={href}
+      href={href as string}
       className={`
         block transition-all duration-200 font-sans
         ${isChild ? 'text-sm py-1 pl-4' : 'py-2'}

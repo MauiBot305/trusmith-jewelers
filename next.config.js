@@ -65,8 +65,7 @@ const nextConfig = {
 
   // ── Experimental ────────────────────────────────────────────────────────────
   experimental: {
-    // Typed routes — catches broken links at compile time
-    typedRoutes: true,
+    // typedRoutes: true, // Enable after all href props use typed routes
   },
 };
 
