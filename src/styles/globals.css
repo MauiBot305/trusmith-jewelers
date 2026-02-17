@@ -1,0 +1,168 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* ── True Smith Dark Theme (Default) ────────────────────── */
+    --background: 0 0% 0%; /* #000000 */
+    --foreground: 0 0% 96%; /* #F5F5F5 */
+
+    --card: 0 0% 4%; /* #0A0A0A */
+    --card-foreground: 0 0% 96%;
+
+    --popover: 0 0% 4%;
+    --popover-foreground: 0 0% 96%;
+
+    /* Gold as primary */
+    --primary: 46 63% 52%; /* #D4AF37 */
+    --primary-foreground: 0 0% 0%; /* Black text on gold */
+
+    --secondary: 0 0% 10%; /* #1A1A1A */
+    --secondary-foreground: 0 0% 96%;
+
+    --muted: 0 0% 10%;
+    --muted-foreground: 0 0% 60%;
+
+    --accent: 46 63% 52%; /* Gold accent */
+    --accent-foreground: 0 0% 0%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 15%; /* Subtle dark border */
+    --input: 0 0% 10%;
+    --ring: 46 63% 52%; /* Gold focus ring */
+
+    --radius: 0.5rem;
+  }
+
+  /* Light theme override (rarely used) */
+  .light {
+    --background: 0 0% 98%;
+    --foreground: 0 0% 4%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 4%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 4%;
+    --primary: 46 63% 45%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 92%;
+    --secondary-foreground: 0 0% 10%;
+    --muted: 0 0% 92%;
+    --muted-foreground: 0 0% 40%;
+    --accent: 46 63% 45%;
+    --accent-foreground: 0 0% 100%;
+    --border: 0 0% 88%;
+    --input: 0 0% 88%;
+    --ring: 46 63% 45%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply scroll-smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-black text-white-off font-sans;
+    font-feature-settings:
+      'kern' 1,
+      'liga' 1,
+      'calt' 1;
+  }
+
+  /* ── Headings use serif ───────────────────────────────────── */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-serif tracking-tight;
+  }
+
+  /* ── Selection styling ────────────────────────────────────── */
+  ::selection {
+    background: rgba(212, 175, 55, 0.3);
+    color: #ffffff;
+  }
+
+  /* ── Custom scrollbar ─────────────────────────────────────── */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-black-deep;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #d4af37;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #c5a028;
+  }
+}
+
+@layer components {
+  /* ── Gold gradient text utility ───────────────────────────── */
+  .text-gold-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #e8c84d 0%, #d4af37 40%, #b8860b 100%);
+  }
+
+  /* ── Luxury divider ───────────────────────────────────────── */
+  .divider-gold {
+    @apply w-16 h-px mx-auto;
+    background: linear-gradient(90deg, transparent, #d4af37, transparent);
+  }
+
+  /* ── Glass card effect ────────────────────────────────────── */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(212, 175, 55, 0.15);
+  }
+
+  /* ── Product image hover ──────────────────────────────────── */
+  .product-image-wrapper {
+    @apply relative overflow-hidden;
+  }
+  .product-image-wrapper img {
+    @apply transition-transform duration-700 ease-in-out;
+  }
+  .product-image-wrapper:hover img {
+    @apply scale-110;
+  }
+
+  /* ── Section standard padding ─────────────────────────────── */
+  .section-padding {
+    @apply py-20 md:py-28 lg:py-32;
+  }
+
+  /* ── Shimmer loading skeleton ─────────────────────────────── */
+  .skeleton {
+    @apply animate-shimmer bg-shimmer bg-[length:200%_100%];
+    background-color: #1a1a1a;
+  }
+}
+
+@layer utilities {
+  /* ── Focus visible utility ────────────────────────────────── */
+  .focus-gold {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-black;
+  }
+
+  /* ── Text stroke for display headings ─────────────────────── */
+  .text-stroke-gold {
+    -webkit-text-stroke: 1px #d4af37;
+    color: transparent;
+  }
+}

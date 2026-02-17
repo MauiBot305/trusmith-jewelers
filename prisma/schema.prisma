@@ -1,0 +1,185 @@
+// ── True Smith Jewelers — Prisma Schema ───────────────────────────────────────
+// PostgreSQL via Supabase/Neon/Railway
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ── Customer ───────────────────────────────────────────────────────────────────
+
+model Customer {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  designs   Design[]
+  deposits  Deposit[]
+
+  @@map("customers")
+}
+
+// ── Lead (Quote Requests, Contact Forms) ──────────────────────────────────────
+
+model Lead {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  message   String?
+  source    String   @default("contact") // contact | builder | product | gold-sell | social
+  status    String   @default("new")     // new | contacted | qualified | closed
+  createdAt DateTime @default(now())
+
+  @@map("leads")
+}
+
+// ── Diamond Inventory ─────────────────────────────────────────────────────────
+
+model Diamond {
+  id            String   @id @default(cuid())
+  sku           String?  @unique
+  cut           String   // Round | Oval | Princess | Cushion | Emerald | Marquise | Pear | Radiant | Asscher | Heart
+  carat         Float
+  color         String   // D | E | F | G | H | I | J | K
+  clarity       String   // FL | IF | VVS1 | VVS2 | VS1 | VS2 | SI1 | SI2 | I1
+  price         Float
+  certification String   // IGI | GIA
+  certNumber    String?
+  images        String[] // URLs (Cloudinary, etc.)
+  videoUrl      String?
+  available     Boolean  @default(true)
+  featured      Boolean  @default(false)
+  description   String?
+  createdAt     DateTime @default(now())
+  designs       Design[]
+
+  @@map("diamonds")
+}
+
+// ── Ring Settings ─────────────────────────────────────────────────────────────
+
+model Setting {
+  id          String   @id @default(cuid())
+  name        String
+  style       String   // Solitaire | Halo | Pavé | Three-Stone | Cathedral | Bezel | Tension | Vintage | East-West | Bypass
+  description String
+  story       String   // Emotional meaning / backstory for the style
+  images      String[]
+  basePrice   Float
+  designs     Design[]
+
+  @@map("settings")
+}
+
+// ── Metals ────────────────────────────────────────────────────────────────────
+
+model Metal {
+  id            String   @id @default(cuid())
+  name          String   // Yellow Gold | White Gold | Rose Gold | Platinum
+  type          String   // gold | platinum
+  karat         String?  // 14K | 18K | 24K
+  priceModifier Float    @default(1.0)
+  designs       Design[]
+
+  @@map("metals")
+}
+
+// ── Custom Design (Ring Configurator) ─────────────────────────────────────────
+
+model Design {
+  id         String    @id @default(cuid())
+  customerId String?
+  customer   Customer? @relation(fields: [customerId], references: [id])
+  diamondId  String
+  diamond    Diamond   @relation(fields: [diamondId], references: [id])
+  settingId  String
+  setting    Setting   @relation(fields: [settingId], references: [id])
+  metalId    String
+  metal      Metal     @relation(fields: [metalId], references: [id])
+  engraving  String?
+  ringSize   String?
+  totalPrice Float?
+  status     String    @default("draft") // draft | quoted | deposited | in_production | completed
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deposits   Deposit[]
+
+  @@map("designs")
+}
+
+// ── Deposits (Stripe Payments) ────────────────────────────────────────────────
+
+model Deposit {
+  id         String    @id @default(cuid())
+  designId   String    @unique  // One active deposit per design
+  design     Design    @relation(fields: [designId], references: [id])
+  customerId String?
+  customer   Customer? @relation(fields: [customerId], references: [id])
+  amount     Float
+  stripeId   String?   // Stripe payment intent ID
+  sessionId  String?   // Stripe checkout session ID
+  status     String    @default("pending") // pending | paid | refunded | failed
+  paidAt     DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@map("deposits")
+}
+
+// ── Ready-to-Ship Inventory ───────────────────────────────────────────────────
+
+model InventoryProduct {
+  id          String   @id @default(cuid())
+  sku         String?  @unique
+  name        String
+  category    String   // ring | bracelet | chain | earring | pendant
+  description String
+  price       Float
+  metalType   String
+  metalPurity String?
+  diamondType String?  // lab | natural
+  diamondSpecs String? // JSON: {carat, cut, color, clarity}
+  images      String[]
+  weight      String?
+  dimensions  String?
+  available   Boolean  @default(true)
+  featured    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@map("inventory_products")
+}
+
+// ── Contact Messages ───────────────────────────────────────────────────────────
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  message   String
+  createdAt DateTime @default(now())
+
+  @@map("contact_messages")
+}
+
+// ── Gold Sell Requests ────────────────────────────────────────────────────────
+
+model GoldSellRequest {
+  id       String   @id @default(cuid())
+  name     String
+  email    String
+  phone    String?
+  goldType String   // 10K | 14K | 18K | 24K | jewelry | coins | bars
+  weight   String?  // self-reported weight
+  photoUrl String?  // uploaded photo URL
+  status   String   @default("new") // new | reviewed | quoted | completed
+  createdAt DateTime @default(now())
+
+  @@map("gold_sell_requests")
+}
