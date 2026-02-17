@@ -9,9 +9,7 @@ import {
   Environment,
   ContactShadows,
   OrbitControls,
-  Lightformer,
 } from '@react-three/drei'
-import { EffectComposer, Bloom, Vignette } from '@react-three/postprocessing'
 import * as THREE from 'three'
 import { ProceduralRing, RingPlaceholder, type RingConfig } from './ProceduralRing'
 
@@ -39,16 +37,6 @@ function StudioLighting() {
   )
 }
 
-function JewelryEnvironment() {
-  return (
-    <Environment files="/hdri/jewelry-studio-v2.hdr" background={false}>
-      <Lightformer position={[0, 5, -5]} scale={[10, 5, 1]} intensity={2} color="#ffffff" />
-      <Lightformer position={[-5, 2, 0]} scale={[5, 3, 1]} intensity={1} color="#e8f0ff" rotation-y={Math.PI / 2} />
-      <Lightformer position={[5, 2, 0]} scale={[5, 3, 1]} intensity={1} color="#fff8e0" rotation-y={-Math.PI / 2} />
-    </Environment>
-  )
-}
-
 function SceneContent({ ringConfig }: { ringConfig: RingConfig }) {
   return (
     <>
@@ -65,16 +53,12 @@ function SceneContent({ ringConfig }: { ringConfig: RingConfig }) {
         dampingFactor={0.05}
         enableDamping
       />
-      <JewelryEnvironment />
+      <Environment files="/hdri/jewelry-studio-v2.hdr" background={false} />
       <StudioLighting />
       <Suspense fallback={<RingPlaceholder />}>
         <ProceduralRing config={ringConfig} />
       </Suspense>
       <ContactShadows position={[0, -1.5, 0]} opacity={0.5} scale={8} blur={2.5} far={4} resolution={512} />
-      <EffectComposer multisampling={4}>
-        <Bloom luminanceThreshold={0.8} luminanceSmoothing={0.9} intensity={0.4} />
-        <Vignette offset={0.3} darkness={0.4} eskil={false} />
-      </EffectComposer>
       <Preload all />
     </>
   )
@@ -89,7 +73,7 @@ export default function Scene3D({ ringConfig, className = '' }: Scene3DProps) {
   return (
     <div className={`w-full h-full ${className}`}>
       <Canvas
-        shadows="soft"
+        shadows
         dpr={[1, 2]}
         camera={{ position: [0, 1, 4], fov: 45, near: 0.1, far: 100 }}
         gl={{
